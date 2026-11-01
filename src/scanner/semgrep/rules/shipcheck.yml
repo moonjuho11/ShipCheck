@@ -1,0 +1,124 @@
+# ShipCheck custom Semgrep rules, tuned for code written by AI app builders.
+# metadata.shipcheck_rule maps a result to the plain-English rule catalog (src/scanner/rules.ts).
+rules:
+  - id: sql-injection-template
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: SQL query built by pasting values into the SQL text
+    metadata: { shipcheck_rule: input.sql-injection }
+    pattern-either:
+      - pattern: $DB.query(`...${$X}...`, ...)
+      - pattern: $DB.execute(`...${$X}...`, ...)
+      - pattern: $DB.raw(`...${$X}...`, ...)
+      - pattern: $DB.unsafe(`...${$X}...`, ...)
+      - pattern: $DB.$queryRawUnsafe(...)
+      - pattern: $DB.$executeRawUnsafe(...)
+
+  - id: sql-injection-concat
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: SQL query built with string concatenation
+    metadata: { shipcheck_rule: input.sql-injection }
+    patterns:
+      - pattern-either:
+          - pattern: $DB.query($STR + $X, ...)
+          - pattern: $DB.execute($STR + $X, ...)
+      - metavariable-regex:
+          metavariable: $STR
+          regex: (?i).*\b(select|insert|update|delete)\b
+
+  - id: supabase-filter-injection
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Supabase .or()/.filter() string built from variables
+    metadata: { shipcheck_rule: input.sql-injection, shipcheck_severity: medium }
+    pattern-either:
+      - pattern: $Q.or(`...${$X}...`, ...)
+      - pattern: $Q.filter($C, $OP, `...${$X}...`)
+
+  - id: nosql-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: Raw request data passed into a MongoDB query
+    metadata: { shipcheck_rule: input.nosql-injection }
+    patterns:
+      - pattern-either:
+          - pattern: $M.$F($REQ.body, ...)
+          - pattern: $M.$F($REQ.query, ...)
+          - pattern: "$M.$F({..., $K: $REQ.body.$P, ...}, ...)"
+          - pattern: "$M.$F({..., $K: $REQ.query.$P, ...}, ...)"
+      - metavariable-regex:
+          metavariable: $F
+          regex: ^(find|findOne|findOneAndUpdate|findOneAndDelete|findOneAndReplace|updateOne|updateMany|deleteOne|deleteMany|countDocuments|exists|where)$
+      - metavariable-regex:
+          metavariable: $REQ
+          regex: ^(req|request)$
+
+  - id: command-injection
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: Shell command built from variables
+    metadata: { shipcheck_rule: input.command-injection }
+    pattern-either:
+      - pattern: exec(`...${$X}...`, ...)
+      - pattern: execSync(`...${$X}...`, ...)
+      - pattern: $CP.exec(`...${$X}...`, ...)
+      - pattern: $CP.execSync(`...${$X}...`, ...)
+      - pattern: exec($S + $X, ...)
+      - pattern: execSync($S + $X, ...)
+      - pattern: "spawn($C, $ARGS, {..., shell: true, ...})"
+
+  - id: code-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: Dynamic code evaluation
+    metadata: { shipcheck_rule: input.code-eval }
+    patterns:
+      - pattern-either:
+          - pattern: eval($X)
+          - pattern: new Function(...)
+      - pattern-not: eval("...")
+
+  - id: xss-dangerously-set-inner-html
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: HTML inserted without sanitizing
+    metadata: { shipcheck_rule: input.xss }
+    patterns:
+      - pattern: "{__html: $X}"
+      - pattern-not: "{__html: \"...\"}"
+      - pattern-not: "{__html: $S.sanitize(...)}"
+      - pattern-not: "{__html: sanitize(...)}"
+      - pattern-not: "{__html: sanitizeHtml(...)}"
+      - pattern-not: "{__html: JSON.stringify(...)}"
+
+  - id: xss-inner-html
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: innerHTML / document.write with dynamic content
+    metadata: { shipcheck_rule: input.xss }
+    patterns:
+      - pattern-either:
+          - pattern: $E.innerHTML = $X
+          - pattern: $E.outerHTML = $X
+          - pattern: document.write($X)
+      - pattern-not: $E.innerHTML = "..."
+      - pattern-not: $E.innerHTML = $S.sanitize(...)
+
+  - id: ssrf-fetch-request-url
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: Server-side request to a URL taken from the request
+    metadata: { shipcheck_rule: input.ssrf }
+    patterns:
+      - pattern-either:
+          - pattern: fetch($REQ.$P.$X, ...)
+          - pattern: axios.$M($REQ.$P.$X, ...)
+          - pattern: axios($REQ.$P.$X, ...)
+          - pattern: got($REQ.$P.$X, ...)
+      - metavariable-regex:
+          metavariable: $REQ
+          regex: ^(req|request)$
+      - metavariable-regex:
+          metavariable: $P
+          regex: ^(query|body|params)$

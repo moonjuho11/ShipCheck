@@ -1,0 +1,14 @@
+{
+  "name": "notely",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/ssr": "0.5.2",
+    "@upstash/ratelimit": "2.0.5",
+    "dompurify": "3.4.17",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "stripe": "17.7.0",
+    "zod": "4.6.7"
+  }
+}
