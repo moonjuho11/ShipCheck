@@ -1,7 +1,6 @@
 import postgres from "postgres";
 
 declare global {
-  // eslint-disable-next-line no-var
   var __shipcheckSql: postgres.Sql | undefined;
 }
 

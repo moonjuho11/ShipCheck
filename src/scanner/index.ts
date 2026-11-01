@@ -7,33 +7,15 @@ import { checkLiveSite } from "./checks/live-site";
 import { checkProduction } from "./checks/production";
 import { checkSecrets } from "./checks/secrets";
 import { hasBinary } from "./exec";
-import { buildContext } from "./files";
+import { buildContext, isCode } from "./files";
 import { aiReview } from "./llm";
 import { dedupe, enrich } from "./rules";
 import { cloneGitHub, copyLocal, type ParsedRepo, type Sandbox } from "./sandbox";
 import { score } from "./score";
+import { initialSteps, STEP_LABELS } from "./steps";
 import { SEVERITIES, type Finding, type RawFinding, type ScanResult, type Step, type StepKey } from "./types";
 
-export const STEP_LABELS: Record<StepKey, string> = {
-  clone: "Making a private, temporary copy of your code",
-  secrets: "Looking for leaked passwords and API keys",
-  database: "Checking who can read and change your database",
-  auth: "Checking that private pages and APIs need a login",
-  input: "Testing how your app handles what people type and upload",
-  dependencies: "Checking your packages for known security holes",
-  live_site: "Checking your live website",
-  production: "Checking launch basics: errors, rate limits, backups",
-  ai_review: "Having AI double-check the riskiest files",
-  report: "Writing your report",
-};
-
-export function initialSteps(opts: { siteUrl?: string | null; ai: boolean }): Step[] {
-  return (Object.keys(STEP_LABELS) as StepKey[]).map((key) => ({
-    key, label: STEP_LABELS[key],
-    status: (key === "live_site" && !opts.siteUrl) || (key === "ai_review" && !opts.ai) ? "skipped" : "pending",
-    detail: key === "live_site" && !opts.siteUrl ? "No website address given" : key === "ai_review" && !opts.ai ? "AI review is not configured" : undefined,
-  }));
-}
+export { initialSteps, STEP_LABELS };
 
 export interface ScanInput {
   source: { kind: "github"; repo: ParsedRepo; token?: string; ref?: string } | { kind: "local"; path: string };
@@ -84,6 +66,7 @@ export async function runScan(input: ScanInput): Promise<ScanResult> {
       throw e;
     }
     const ctx = await buildContext(sandbox.dir);
+    const codeFiles = ctx.files.filter((f) => isCode(f.path)).length;
     await set("clone", "done", `${ctx.files.length} files read`);
 
     const [useGitleaks, useSemgrep] = await Promise.all([
@@ -130,8 +113,12 @@ export async function runScan(input: ScanInput): Promise<ScanResult> {
     findings.sort((a, b) => SEVERITIES.indexOf(a.severity) - SEVERITIES.indexOf(b.severity) || (a.file || "").localeCompare(b.file || "") || (a.line || 0) - (b.line || 0));
     const s = score(findings);
     // If a core check crashed we can't vouch for the app, whatever the score says.
-    const incomplete = steps.some((x) => x.status === "failed" && x.key !== "ai_review");
+    let incomplete = steps.some((x) => x.status === "failed" && x.key !== "ai_review");
     if (incomplete) notes.push("Some checks couldn't run, so this scan can't certify the app as production ready.");
+    if (codeFiles === 0) {
+      incomplete = true;
+      notes.push("We didn't find any app code in this repository, so there was nothing to certify.");
+    }
     await set("report", "done");
     return {
       findings, score: s.score, productionReady: s.productionReady && !incomplete, counts: s.counts,

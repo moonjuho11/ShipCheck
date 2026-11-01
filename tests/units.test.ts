@@ -132,3 +132,33 @@ describe("AI review merge", () => {
     expect(r.findings).toEqual([f]);
   });
 });
+
+describe("empty repositories", () => {
+  it("are never certified as production ready", async () => {
+    const { mkdtempSync, writeFileSync, rmSync } = await import("node:fs");
+    const os = await import("node:os");
+    const path = await import("node:path");
+    const { runScan } = await import("../src/scanner");
+    const dir = mkdtempSync(path.join(os.tmpdir(), "shipcheck-empty-"));
+    writeFileSync(path.join(dir, "README.md"), "# hello\n");
+    try {
+      const r = await runScan({ source: { kind: "local", path: dir } });
+      expect(r.findings).toEqual([]);
+      expect(r.productionReady).toBe(false);
+      expect(r.meta.notes.join(" ")).toMatch(/didn't find any app code/);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+});
+
+describe("GitHub webhook signatures", () => {
+  it("accepts only the correct HMAC", async () => {
+    const { createHmac } = await import("node:crypto");
+    const { verifyWebhookSignature } = await import("../src/lib/github");
+    const body = '{"action":"opened"}';
+    const good = "sha256=" + createHmac("sha256", "s3cret").update(body).digest("hex");
+    expect(verifyWebhookSignature(body, good, "s3cret")).toBe(true);
+    expect(verifyWebhookSignature(body + " ", good, "s3cret")).toBe(false);
+    expect(verifyWebhookSignature(body, good, "")).toBe(false);
+    expect(verifyWebhookSignature(body, null, "s3cret")).toBe(false);
+  });
+});
