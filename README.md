@@ -96,6 +96,7 @@ GitHub → Developer settings → **GitHub Apps → New**:
 - Webhook URL: `${APP_URL}/api/github/webhook`. Generate a webhook secret and put it in `GITHUB_APP_WEBHOOK_SECRET`.
 - Repository permissions: **Contents: read**, **Checks: read & write**, **Metadata: read**
 - Subscribe to events: **Pull request**. Installation events are sent automatically.
+- Upload `docs/brand/app-icon-512.png` as the app logo.
 - Generate a private key. Put it in `GITHUB_APP_PRIVATE_KEY` with newlines escaped as `\n`. Set `GITHUB_APP_ID` and `GITHUB_APP_SLUG`.
 
 When a Pro user installs the app, every opened or updated PR gets a **ShipCheck** check run: green when Production Ready, red otherwise, with a link to the report. The worker prefers the app's read-only installation token over the user's OAuth token when cloning.
@@ -105,7 +106,8 @@ When a Pro user installs the app, every opened or updated PR gets a **ShipCheck*
 1. Create a product with two prices: **$29 one-time** and **$49 monthly recurring**. Put their IDs in `STRIPE_PRICE_REPO` and `STRIPE_PRICE_PRO`.
 2. Set `STRIPE_SECRET_KEY`.
 3. Add a webhook endpoint at `${APP_URL}/api/stripe/webhook` with these events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
-4. Turn on the **Customer portal** in Stripe settings; the "Manage billing" button uses it.
+4. In **Settings → Branding**, upload `docs/brand/app-icon-512.png` as the icon so Checkout shows the ShipCheck mark.
+5. Turn on the **Customer portal** in Stripe settings; the "Manage billing" button uses it.
 
 For local development, forward webhooks with the Stripe CLI:
 
@@ -212,3 +214,8 @@ Those two dev switches are ignored when `NODE_ENV=production`.
 - The Firebase check reads rules files in the repo. It can't see rules edited only in the Firebase console, and the same applies to Supabase policies created only in the dashboard. If no migrations are committed, ShipCheck reports that instead.
 - "Backups" can only be inferred from the repo, so that finding is deliberately low severity.
 - Polling (1.5s) drives the progress UI. Swap in Supabase Realtime or SSE if you need instant updates.
+
+## Brand assets
+
+The ShipCheck mark lives in [`docs/brand/`](docs/brand): `logo-white.svg` / `logo-black.svg` (transparent), `app-icon.svg` (on the dark background), and 512px PNGs of each for places that need an upload. In code it's `src/components/Logo.tsx`, and the browser tab icon is `src/app/icon.svg`.
+
