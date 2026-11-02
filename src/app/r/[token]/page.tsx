@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CountTiles, ReadyBadge, ScoreRing } from "@/components/ReportBits";
-import { ArrowRight, CheckIcon, SEV } from "@/components/ui";
+import { AreaStatus, CountTiles, ReadyBadge, ScoreFigure } from "@/components/ReportBits";
+import { ArrowRight } from "@/components/ui";
 import { publicSummary } from "@/lib/report";
 import { getFindings, getScanByShareToken } from "@/lib/scans";
 
@@ -24,24 +24,24 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
     <div className="relative overflow-hidden">
       <div aria-hidden className="bg-grid fade-edges absolute inset-0" />
       <div className="relative mx-auto max-w-2xl px-5 py-16">
-        <p className="label-mono text-center">ShipCheck safety report</p>
+        <p className="eyebrow text-center">ShipCheck safety report</p>
         <h1 className="headline mt-4 text-center text-[30px] sm:text-[40px]">{s.repo}</h1>
-        <p className="mt-2 text-center font-mono text-[11.5px] text-ink-4">
-          scanned {s.finishedAt?.toLocaleDateString()}{s.commitSha ? ` · commit ${s.commitSha.slice(0, 7)}` : ""}
+        <p className="mt-2 text-center text-[13px] text-ink-4">
+          Scanned {s.finishedAt?.toLocaleDateString()}{s.commitSha ? <> · Commit <span className="font-mono">{s.commitSha.slice(0, 7)}</span></> : null}
         </p>
         <div className="window mt-10">
-          <div className="flex flex-col items-center gap-5 p-8">
-            <ScoreRing score={s.score} size={168} />
-            <ReadyBadge ready={s.productionReady} />
-            <div className="w-full"><CountTiles counts={s.counts} /></div>
+          <div className="p-6 sm:p-8">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div><p className="eyebrow">Safety score</p><div className="mt-1"><ScoreFigure score={s.score} /></div></div>
+              <ReadyBadge ready={s.productionReady} />
+            </div>
+            <div className="mt-6"><CountTiles counts={s.counts} /></div>
           </div>
           <ul className="border-t border-line">
             {s.areas.map((a) => (
               <li key={a.key} className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5 last:border-0">
                 <div><p className="text-[14px] text-ink">{a.label}</p><p className="text-[12px] text-ink-4">{a.blurb}</p></div>
-                {a.key === "live_site" && !s.liveChecked ? <span className="text-[12px] text-ink-4">not checked</span>
-                  : a.count === 0 ? <span className="flex items-center gap-1.5 text-[13px] text-signal"><CheckIcon /> Passed</span>
-                  : <span className={`font-mono text-[12px] ${a.worst ? SEV[a.worst].text : "text-ink-3"}`}>{a.count} to review</span>}
+                <AreaStatus count={a.count} checked={!(a.key === "live_site" && !s.liveChecked)} />
               </li>
             ))}
           </ul>

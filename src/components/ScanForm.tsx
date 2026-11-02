@@ -71,7 +71,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
       </label>
       <label className="flex items-center gap-3 border-t border-line px-4 py-2.5">
         <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-ink-4" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden><circle cx="8" cy="8" r="6.2" /><path d="M1.8 8h12.4M8 1.8c1.8 2 1.8 10.4 0 12.4M8 1.8c-1.8 2-1.8 10.4 0 12.4" /></svg>
-        <span className="label-mono shrink-0 !text-[10px]">Live site</span>
+        <span className="eyebrow shrink-0">Live site</span>
         <input
           name="site" autoComplete="off" spellCheck={false}
           className="min-w-0 flex-1 bg-transparent font-mono text-[13px] text-ink-2 placeholder:text-ink-4 focus:outline-none"
@@ -79,7 +79,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
         />
       </label>
       {problem && (
-        <div role="alert" className="flex flex-wrap items-center justify-between gap-2 border-t border-line bg-high/[0.06] px-4 py-2.5 text-[13px] text-[#ffc89a]">
+        <div role="alert" className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-2.5 text-[13px] text-ink-2">
           <span>{problem.message}</span>
           {problem.action && <a href={problem.action.href} className="font-medium text-ink underline decoration-ink-4 underline-offset-4 hover:decoration-ink">{problem.action.label} →</a>}
         </div>
@@ -97,7 +97,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
           {signedIn ? (hasPrivateAccess ? "Public & private repos" : "Public repos") : "Sign in with GitHub to scan"}
         </p>
         <button type="submit" disabled={busy} className="btn-signal !h-9 shrink-0 !px-4">
-          {busy ? <><Spinner /> Starting…</> : <>Scan my app <span className="rounded bg-black/15 px-1 font-mono text-[11px]">↵</span></>}
+          {busy ? <><Spinner /> Starting…</> : <>Scan my app</>}
         </button>
       </div>
       {!compact && signedIn && !hasPrivateAccess && (

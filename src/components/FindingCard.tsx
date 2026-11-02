@@ -30,7 +30,7 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
           <p className="text-[14px] leading-snug text-ink"><Rich text={f.title} /></p>
           {f.file && <p className="mt-0.5 truncate font-mono text-[11.5px] text-ink-4">{f.file}{f.line ? `:${f.line}` : ""}{f.evidence ? `  ·  ${f.evidence}` : ""}</p>}
         </div>
-        {f.aiWritten && <span className="hidden rounded-md bg-white/[0.05] px-1.5 py-0.5 text-[10.5px] font-medium text-ink-3 ring-1 ring-line-2 ring-inset sm:inline">AI review</span>}
+        {f.aiWritten && <span className="hidden text-[12px] text-ink-4 sm:inline">Found by AI review</span>}
         <span className="hidden text-[12px] text-ink-4 md:inline">{categoryLabel}</span>
         {locked ? (
           <LockIcon className="h-3.5 w-3.5 shrink-0 text-ink-4" />
@@ -43,17 +43,17 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2"><SeverityTag severity={f.severity} /><span className="text-[12px] text-ink-4">{categoryLabel}</span></div>
             <section>
-              <h4 className="label-mono !text-[10px]">What’s wrong</h4>
+              <h4 className="eyebrow">What’s wrong</h4>
               <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.explanation!} /></p>
             </section>
             <section>
-              <h4 className="label-mono !text-[10px]">Why it matters</h4>
+              <h4 className="eyebrow">Why it matters</h4>
               <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.whyItMatters!} /></p>
             </section>
           </div>
           <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-black/40">
             <div className="flex items-center justify-between gap-2 border-b border-line px-3.5 py-2">
-              <h4 className="label-mono truncate !text-[10px]">Fix prompt <span className="hidden text-ink-4 sm:inline">· paste into your AI tool</span></h4>
+              <h4 className="eyebrow truncate">Fix prompt <span className="hidden text-ink-4 sm:inline">· paste into your AI tool</span></h4>
               <button type="button" onClick={copy} className={`flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2.5 whitespace-nowrap text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-ink text-canvas hover:bg-white"}`}>
                 {copied ? <><CheckIcon className="h-3 w-3" /> Copied</> : "Copy prompt"}
               </button>

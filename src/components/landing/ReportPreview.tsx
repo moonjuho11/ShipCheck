@@ -21,11 +21,9 @@ export function ReportPreview() {
         </div>
         <div className="grid md:grid-cols-[260px_1fr]">
           <aside className="hidden border-r border-line p-5 md:block">
-            <p className="label-mono">Safety score</p>
-            <div className="mt-3 flex items-end gap-2"><span className="text-6xl font-medium tracking-tighter text-ink">38</span><span className="mb-2 text-ink-4">/100</span></div>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-crit/10 px-2.5 py-1 text-[12px] font-medium text-crit ring-1 ring-crit/25 ring-inset">
-              <span className="h-1.5 w-1.5 rounded-full bg-crit" /> Not ready to launch
-            </div>
+            <p className="eyebrow">Safety score</p>
+            <div className="mt-2 flex items-baseline gap-1.5"><span className="text-5xl font-semibold tracking-tight text-ink">38</span><span className="text-ink-4">/ 100</span></div>
+            <p className="mt-2 text-[14px] font-semibold text-ink">Not ready to launch</p>
             <div className="mt-6 space-y-2.5">
               {([["critical", 2], ["high", 2], ["medium", 1], ["low", 1]] as [Severity, number][]).map(([s, n]) => (
                 <div key={s} className="flex items-center gap-2 text-[13px]">
@@ -37,14 +35,14 @@ export function ReportPreview() {
             </div>
             <div className="mt-6 space-y-1.5 border-t border-line pt-5 text-[12px]">
               {[["Secrets", 1], ["Database", 1], ["Login", 2], ["Packages", 0], ["Live site", 0]].map(([a, n]) => (
-                <div key={a} className="flex justify-between"><span className="text-ink-3">{a}</span>{n ? <span className="text-crit">{n} to fix</span> : <span className="text-signal">✓ passed</span>}</div>
+                <div key={a} className="flex justify-between"><span className="text-ink-3">{a}</span>{n ? <span className="text-ink-2">{n} {n === 1 ? "issue" : "issues"}</span> : <span className="text-ink-4">Passed</span>}</div>
               ))}
             </div>
           </aside>
           <div className="min-w-0">
             <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
               <span className="text-[13px] font-medium text-ink-2">acme/taskpal</span>
-              <span className="label-mono !text-[10px]">6 issues</span>
+              <span className="eyebrow">6 issues</span>
             </div>
             <ul>
               {ROWS.map((r, i) => (

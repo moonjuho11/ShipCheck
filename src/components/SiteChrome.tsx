@@ -51,8 +51,8 @@ export function SiteFooter() {
         <FooterCol title="Account" links={[["My scans", "/dashboard"], ["Sign in", "/api/auth/github?next=/dashboard"]]} />
       </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-t border-line px-6 py-4">
-        <span className="label-mono">© {new Date().getFullYear()} ShipCheck</span>
-        <span className="label-mono">Your code is never stored</span>
+        <span className="eyebrow">© {new Date().getFullYear()} ShipCheck</span>
+        <span className="eyebrow">Your code is never stored</span>
       </div>
     </footer>
   );
@@ -61,7 +61,7 @@ export function SiteFooter() {
 function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
     <div>
-      <p className="label-mono">{title}</p>
+      <p className="eyebrow">{title}</p>
       <ul className="mt-3 space-y-2 text-sm">
         {links.map(([l, h]) => <li key={l}><Link href={h} className="text-ink-3 transition hover:text-ink">{l}</Link></li>)}
       </ul>

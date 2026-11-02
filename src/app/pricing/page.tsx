@@ -46,12 +46,11 @@ export default async function Pricing() {
       <Section className="grid gap-px bg-line lg:grid-cols-3">
         {TIERS.map((t) => (
           <div key={t.key} className={`relative flex flex-col bg-canvas p-7 sm:p-8 ${"highlight" in t ? "bg-panel" : ""}`}>
-            {"highlight" in t && <span className="absolute top-7 right-7 rounded-full bg-signal/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-signal uppercase ring-1 ring-signal/30">Before launch</span>}
-            <p className="label-mono">{t.name}</p>
+            <p className="text-[15px] font-semibold text-ink">{t.name}</p>
             <p className="mt-1 text-sm text-ink-3">{t.tagline}</p>
-            <p className="mt-6 flex items-baseline gap-2"><span className="text-5xl font-medium tracking-tighter text-ink">{t.price}</span><span className="font-mono text-xs text-ink-4">{t.cadence}</span></p>
+            <p className="mt-6 flex items-baseline gap-2"><span className="text-5xl font-semibold tracking-tight text-ink">{t.price}</span><span className="text-sm text-ink-4">{t.cadence}</span></p>
             <ul className="mt-8 flex-1 space-y-3 text-[14px] text-ink-2">
-              {t.features.map((f) => <li key={f} className="flex gap-2.5"><CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-signal" />{f}</li>)}
+              {t.features.map((f) => <li key={f} className="flex gap-2.5"><CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-ink-3" />{f}</li>)}
             </ul>
             <div className="mt-10">
               {t.key === "free" && <Link href="/#scan" className="btn-ghost w-full">Start a free scan</Link>}
@@ -73,20 +72,20 @@ export default async function Pricing() {
             <thead>
               <tr className="border-b border-line">
                 <th className="py-3 font-normal text-ink-4" />
-                {["Free", "Repo Pass", "Pro"].map((h) => <th key={h} className="label-mono py-3 !text-[10px] font-medium">{h}</th>)}
+                {["Free", "Repo Pass", "Pro"].map((h) => <th key={h} className="py-3 text-[13px] font-medium text-ink-3">{h}</th>)}
               </tr>
             </thead>
             <tbody>
               {COMPARE.map(([f, ...v]) => (
                 <tr key={f} className="border-b border-line">
                   <td className="py-3 pr-4 text-ink-2">{f}</td>
-                  {v.map((x, i) => <td key={i} className={`py-3 font-mono text-[13px] ${x === "✓" ? "text-signal" : x === "—" ? "text-ink-4" : "text-ink-2"}`}>{x}</td>)}
+                  {v.map((x, i) => <td key={i} className={`py-3 text-[14px] ${x === "—" ? "text-ink-4" : "text-ink-2"}`}>{x === "✓" ? "Included" : x}</td>)}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="label-mono mt-10 !text-[10px]">Payments by Stripe · Prices in USD · Failed scans never count</p>
+        <p className="mt-10 text-[13px] text-ink-4">Payments are handled by Stripe. Prices in USD. Failed scans never count toward your plan.</p>
       </Section>
     </div>
   );

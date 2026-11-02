@@ -1,20 +1,9 @@
 import type { ReactNode } from "react";
 import type { Severity } from "@/scanner/types";
 
-/** Firecrawl-style mono label: [ 01 / 07 ] · WHAT WE CHECK */
-export function BracketLabel({ index, total, children, className = "" }: { index?: number; total?: number; children: ReactNode; className?: string }) {
-  return (
-    <div className={`label-mono flex items-center gap-2 ${className}`}>
-      {index !== undefined && (
-        <span>
-          [ <span className="text-signal">{String(index).padStart(2, "0")}</span>
-          {total !== undefined && <span className="text-ink-4"> / {String(total).padStart(2, "0")}</span>} ]
-        </span>
-      )}
-      {index !== undefined && <span className="text-ink-4">·</span>}
-      <span>{children}</span>
-    </div>
-  );
+/** Small section label. (index/total kept for call-site compatibility; not displayed.) */
+export function BracketLabel({ children, className = "" }: { index?: number; total?: number; children: ReactNode; className?: string }) {
+  return <p className={`eyebrow ${className}`}>{children}</p>;
 }
 
 /** A small "+" registration mark used on grid intersections. */
@@ -26,17 +15,11 @@ export function Cross({ className = "" }: { className?: string }) {
   );
 }
 
-/** Page section framed by vertical rails with crosshair marks at the top corners. */
+/** Page section framed by thin vertical rails. */
 export function Section({ children, className = "", id, rails = true }: { children: ReactNode; className?: string; id?: string; rails?: boolean }) {
   return (
     <section id={id} className={`relative ${rails ? "border-t border-line" : ""}`}>
       <div className={`relative mx-auto max-w-6xl ${rails ? "border-x border-line" : ""} ${className}`}>
-        {rails && (
-          <>
-            <Cross className="absolute -top-[6px] -left-[6px] hidden sm:block" />
-            <Cross className="absolute -top-[6px] -right-[6px] hidden sm:block" />
-          </>
-        )}
         {children}
       </div>
     </section>
@@ -77,11 +60,10 @@ export function SeverityIcon({ severity, className = "h-4 w-4" }: { severity: Se
 }
 
 export function SeverityTag({ severity }: { severity: Severity }) {
-  const s = SEV[severity];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] font-medium ring-1 ring-inset ${s.bg} ${s.text} ${s.ring}`}>
-      <SeverityIcon severity={severity} className="h-3 w-3" />
-      {s.label}
+    <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-ink-2">
+      <SeverityIcon severity={severity} className="h-3.5 w-3.5" />
+      {SEV[severity].label}
     </span>
   );
 }

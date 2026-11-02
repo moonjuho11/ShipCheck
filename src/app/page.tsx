@@ -3,7 +3,7 @@ import { FigExplain, FigFix, FigSandbox } from "@/components/landing/Figures";
 import { ReportPreview } from "@/components/landing/ReportPreview";
 import { ScanTerminal } from "@/components/landing/ScanTerminal";
 import { ScanForm } from "@/components/ScanForm";
-import { ArrowRight, BracketLabel, CheckIcon, Cross, Section, SeverityTag } from "@/components/ui";
+import { ArrowRight, BracketLabel, CheckIcon, Section, SeverityTag } from "@/components/ui";
 import { getCurrentUser } from "@/lib/session";
 import type { Severity } from "@/scanner/types";
 
@@ -39,13 +39,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <section className="relative overflow-hidden pt-[68px]">
         <div aria-hidden className="bg-grid fade-edges pointer-events-none absolute inset-0 opacity-60" />
         <div className="relative mx-auto max-w-4xl px-5 pt-24 pb-16 text-center sm:pt-32">
-          <p className="label-mono">Pre-launch security audit for AI-built apps</p>
+          <p className="eyebrow">Pre-launch security audit for AI-built apps</p>
           <h1 className="display mt-6 text-[40px] text-balance sm:text-[56px] lg:text-[64px]">Is your vibe-coded app<br className="hidden sm:block" /> safe to launch?</h1>
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-balance text-ink-3 sm:text-lg">
             ShipCheck finds leaked keys, open databases and pages that skip the login — then writes the prompt your AI agent needs to fix each one.
           </p>
           <div id="scan" className="mx-auto mt-10 max-w-2xl scroll-mt-28">
-            {error && <div role="alert" className="mb-3 rounded-xl border border-crit/30 bg-crit/10 px-4 py-2.5 text-left text-sm text-[#ffb3b3]">{error}</div>}
+            {error && <div role="alert" className="mb-3 rounded-lg border border-line-2 bg-panel px-4 py-2.5 text-left text-sm text-ink-2">{error}</div>}
             <ScanForm
               signedIn={!!user}
               hasPrivateAccess={/\brepo\b/.test(user?.github_scopes || "")}
@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               initialSite={str(sp.site)}
               autostart={str(sp.autostart) === "1"}
             />
-            <p className="label-mono mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 !text-[10px]">
+            <p className="eyebrow mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
               <span>Never runs your code</span><span className="text-ink-4">/</span>
               <span>Deleted after the scan</span><span className="text-ink-4">/</span>
               <span>~60 seconds</span>
@@ -67,7 +67,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
       {/* ── Builders strip ─────────────────────────────────── */}
       <Section className="flex flex-col items-center gap-5 px-6 py-10 sm:flex-row sm:justify-between">
-        <span className="label-mono">Built for apps made with</span>
+        <span className="eyebrow">Built for apps made with</span>
         <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {BUILDERS.map((b) => <li key={b} className="text-[17px] font-semibold tracking-tight text-ink-4">{b}</li>)}
         </ul>
@@ -87,7 +87,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             { fig: "0.3", title: "Fixed in one paste", body: "Copy the prompt into Lovable, Bolt, Cursor or Replit. Rescan to confirm.", Art: FigFix },
           ].map(({ fig, title, body, Art }, i) => (
             <div key={fig} className={`relative px-2 py-8 sm:px-6 ${i > 0 ? "sm:border-l sm:border-line" : ""}`}>
-              <span className="label-mono !text-[10px] text-ink-4">FIG {fig}</span>
+              <span className="eyebrow text-ink-4">FIG {fig}</span>
               <div className="mx-auto mt-2 h-52 max-w-[300px]"><Art /></div>
               <h3 className="mt-4 text-[15px] font-medium text-ink">{title}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-ink-3">{body}</p>
@@ -158,11 +158,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             <p className="mt-1 font-mono text-[11.5px] text-ink-4">app/api/invoices/[id]/route.ts · line 7</p>
           </div>
           <div className="space-y-4 p-5 text-[14px]">
-            <div><p className="label-mono !text-[10px]">Why it matters</p><p className="mt-1.5 leading-relaxed text-ink-2">A user can change /invoices/123 to /invoices/124 and read someone else’s private data. It’s one of the most common real-world leaks.</p></div>
+            <div><p className="eyebrow">Why it matters</p><p className="mt-1.5 leading-relaxed text-ink-2">A user can change /invoices/123 to /invoices/124 and read someone else’s private data. It’s one of the most common real-world leaks.</p></div>
             <div className="rounded-xl border border-line bg-black/40">
               <div className="flex items-center justify-between border-b border-line px-3.5 py-2">
-                <span className="label-mono !text-[10px]">Fix prompt</span>
-                <span className="flex items-center gap-1.5 rounded-md bg-ink px-2 py-1 text-[11px] font-medium text-canvas"><CheckIcon className="h-3 w-3" /> Copied</span>
+                <span className="eyebrow">Fix prompt</span>
+                <span className="rounded-md bg-ink px-2 py-1 text-[12px] font-medium text-canvas">Copy prompt</span>
               </div>
               <pre className="p-3.5 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-ink-3">{`Fix a security problem in my app.
 
@@ -181,7 +181,7 @@ Please:
           <p className="mt-5 max-w-md leading-relaxed text-ink-3">Each finding comes with a precise, copy-paste prompt: the file, the line, the change, and how to check it worked. Paste it into the tool you built with and rescan.</p>
           <ul className="mt-8 grid grid-cols-2 gap-3 text-sm text-ink-2">
             {["Exact file and line", "Steps your agent can follow", "Keeps the app working", "Tells you how to verify"].map((t) => (
-              <li key={t} className="flex items-center gap-2"><CheckIcon className="h-4 w-4 text-signal" />{t}</li>
+              <li key={t} className="flex items-center gap-2"><CheckIcon className="h-4 w-4 text-ink-3" />{t}</li>
             ))}
           </ul>
         </div>
@@ -224,7 +224,7 @@ Please:
             ["Pro", "$49/mo", "Unlimited scans · PR checks · Production Ready badge"],
           ].map(([n, p, d]) => (
             <div key={n} className="bg-panel p-6">
-              <p className="label-mono">{n}</p>
+              <p className="eyebrow">{n}</p>
               <p className="mt-3 text-3xl font-medium tracking-tight text-ink">{p}</p>
               <p className="mt-2 text-sm text-ink-3">{d}</p>
             </div>
@@ -253,8 +253,6 @@ Please:
 
       {/* ── Final CTA ───────────────────────────────────────── */}
       <Section className="relative overflow-hidden px-6 py-28 text-center">
-        <Cross className="absolute top-1/2 left-6 hidden sm:block" />
-        <Cross className="absolute top-1/2 right-6 hidden sm:block" />
         <div className="relative">
           <BracketLabel index={7} total={7} className="justify-center">Ship it</BracketLabel>
           <h2 className="display mt-6 text-[36px] sm:text-[52px]">Check it before you launch it.</h2>

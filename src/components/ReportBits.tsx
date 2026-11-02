@@ -1,50 +1,42 @@
 import type { Severity } from "@/scanner/types";
 import { SEV, SeverityIcon } from "./ui";
 
-export function scoreColor(score: number) {
-  return score >= 80 ? "#34d17f" : score >= 50 ? "#f2cf4a" : "#ff5c5c";
-}
-
-/** Thin ring with a soft glow in the score's colour. */
-export function ScoreRing({ score, size = 148 }: { score: number; size?: number }) {
-  const r = 54, c = 2 * Math.PI * r, color = scoreColor(score);
+/** The score as plain type: a large number with its scale. */
+export function ScoreFigure({ score, size = "lg" }: { score: number; size?: "lg" | "xl" }) {
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <svg viewBox="0 0 120 120" className="relative h-full w-full -rotate-90 overflow-visible">
-        <circle cx="60" cy="60" r={r} fill="none" stroke="rgb(255 255 255 / 0.07)" strokeWidth="4" />
-        <circle cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${Math.max(0.5, (score / 100) * c)} ${c}`} />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[44px] leading-none font-medium tracking-tighter text-ink tabular-nums">{score}</span>
-        <span className="mt-1 font-mono text-[10px] tracking-widest text-ink-4">/ 100</span>
-      </div>
+    <div className="flex items-baseline gap-1.5">
+      <span className={`font-semibold tracking-tight text-ink tabular-nums ${size === "xl" ? "text-7xl" : "text-6xl"}`}>{score}</span>
+      <span className="text-lg text-ink-4">/ 100</span>
     </div>
   );
 }
 
+/** Verdict stated in words — no pill, no dot. */
 export function ReadyBadge({ ready }: { ready: boolean }) {
-  return ready ? (
-    <span className="inline-flex items-center gap-2 rounded-full bg-signal/10 px-3 py-1 text-[13px] font-medium text-signal ring-1 ring-signal/30 ring-inset">
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"><path d="M8 1.5 2.8 3.6v4c0 3.3 2.2 5.6 5.2 6.9 3-1.3 5.2-3.6 5.2-6.9v-4L8 1.5Z" /><path d="m5.6 8 1.7 1.7 3.2-3.4" strokeLinecap="round" /></svg>
-      Production Ready
-    </span>
-  ) : (
-    <span className="inline-flex items-center gap-2 rounded-full bg-crit/10 px-3 py-1 text-[13px] font-medium text-crit ring-1 ring-crit/30 ring-inset">
-      <span className="h-1.5 w-1.5 rounded-full bg-crit" />
-      Not ready to launch yet
-    </span>
+  return (
+    <div>
+      <p className="eyebrow">Verdict</p>
+      <p className="mt-1 text-[17px] font-semibold text-ink">{ready ? "Production ready" : "Not ready to launch"}</p>
+    </div>
   );
 }
 
 export function CountTiles({ counts }: { counts: Record<Severity, number> }) {
   return (
-    <div className="grid grid-cols-4 gap-px overflow-hidden rounded-xl border border-line bg-line">
+    <div className="grid grid-cols-4 gap-px overflow-hidden rounded-lg border border-line bg-line">
       {(["critical", "high", "medium", "low"] as Severity[]).map((s) => (
         <div key={s} className="bg-panel px-3 py-2.5">
-          <div className="flex items-center gap-1.5"><SeverityIcon severity={s} className="h-3 w-3" /><span className="text-[11px] text-ink-3">{SEV[s].label}</span></div>
-          <div className={`mt-1 text-2xl font-medium tracking-tight tabular-nums ${counts[s] ? "text-ink" : "text-ink-4"}`}>{counts[s]}</div>
+          <div className="flex items-center gap-1.5"><SeverityIcon severity={s} className="h-3 w-3" /><span className="text-[12px] text-ink-3">{SEV[s].label}</span></div>
+          <div className={`mt-1 text-2xl font-semibold tracking-tight tabular-nums ${counts[s] ? "text-ink" : "text-ink-4"}`}>{counts[s]}</div>
         </div>
       ))}
     </div>
   );
+}
+
+/** "3 issues" / "Passed" / "Not checked" — neutral text, sans, no colour coding. */
+export function AreaStatus({ count, checked = true }: { count: number; checked?: boolean }) {
+  if (!checked) return <span className="text-[13px] text-ink-4">Not checked</span>;
+  if (count === 0) return <span className="text-[13px] text-ink-4">Passed</span>;
+  return <span className="text-[13px] text-ink-2 tabular-nums">{count} {count === 1 ? "issue" : "issues"}</span>;
 }

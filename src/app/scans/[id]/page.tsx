@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { FindingCard } from "@/components/FindingCard";
-import { CountTiles, ReadyBadge, ScoreRing } from "@/components/ReportBits";
+import { AreaStatus, CountTiles, ReadyBadge, ScoreFigure } from "@/components/ReportBits";
 import { RescanButton } from "@/components/RescanButton";
 import { ScanProgress } from "@/components/ScanProgress";
 import { ShareControls } from "@/components/ShareControls";
-import { CheckIcon, LockIcon, SEV, SeverityIcon } from "@/components/ui";
+import { SeverityIcon } from "@/components/ui";
 import { env } from "@/lib/env";
 import { getEntitlements, reportAccess } from "@/lib/plans";
 import { CATEGORY_LABELS, SEVERITY_LABELS, shapeReport } from "@/lib/report";
@@ -36,12 +36,12 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
   const header = (
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        <p className="label-mono flex items-center gap-2"><Link href="/dashboard" className="hover:text-ink">Scans</Link><span className="text-ink-4">/</span><span className="truncate normal-case tracking-normal text-ink-3">{scan.repo_full_name}</span></p>
+        <p className="eyebrow flex items-center gap-2"><Link href="/dashboard" className="hover:text-ink">Scans</Link><span className="text-ink-4">/</span><span className="truncate normal-case tracking-normal text-ink-3">{scan.repo_full_name}</span></p>
         <h1 className="headline mt-3 truncate text-[28px] sm:text-[34px]">{scan.repo_full_name}</h1>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11.5px] text-ink-4">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-ink-4">
           <span>{scan.created_at.toLocaleString()}</span>
-          {scan.commit_sha ? <span>commit {scan.commit_sha.slice(0, 7)}</span> : null}
-          {scan.pr_number ? <span>pull request #{scan.pr_number}</span> : null}
+          {scan.commit_sha ? <span>Commit <span className="font-mono">{scan.commit_sha.slice(0, 7)}</span></span> : null}
+          {scan.pr_number ? <span>Pull request #{scan.pr_number}</span> : null}
           {scan.site_url ? <span>{new URL(scan.site_url).host}</span> : null}
         </p>
       </div>
@@ -58,10 +58,9 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
       <div className="mx-auto max-w-6xl px-5 py-12">
         {header}
         <div className="window mx-auto max-w-xl p-8 text-center">
-          <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-high/10 font-mono text-high ring-1 ring-high/30">!</span>
-          <h2 className="mt-4 text-lg font-medium text-ink">We couldn’t finish this scan</h2>
+          <h2 className="text-lg font-semibold text-ink">We couldn’t finish this scan</h2>
           <p className="mt-2 text-ink-3">{scan.error || "Something went wrong."}</p>
-          <p className="label-mono mt-6 !text-[10px]">Failed scans don’t count toward your plan</p>
+          <p className="mt-6 text-[13px] text-ink-4">Failed scans don’t count toward your plan.</p>
         </div>
       </div>
     );
@@ -78,26 +77,30 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
     <div className="mx-auto max-w-6xl px-5 py-12">
       {header}
       {sp.paid === "1" && access === "full" && (
-        <div className="mb-6 flex items-center gap-2 rounded-xl border border-signal/30 bg-signal/10 px-4 py-3 text-sm text-signal"><CheckIcon /> Thanks! Your full report is unlocked below.</div>
+        <div className="mb-6 rounded-lg border border-line-2 bg-panel px-4 py-3 text-sm text-ink-2">Payment received. Your full report is unlocked below.</div>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="min-w-0 space-y-6">
-          <section className="window grid gap-6 p-6 sm:grid-cols-[auto_1fr] sm:items-center sm:p-7">
-            <div className="mx-auto"><ScoreRing score={scan.score ?? 0} /></div>
-            <div className="space-y-4">
-              <ReadyBadge ready={ready} />
-              <p className="text-[15px] leading-relaxed text-ink-2">{verdict(counts, ready)}</p>
-              <CountTiles counts={counts} />
+          <section className="window p-6 sm:p-7">
+            <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-10">
+              <div>
+                <p className="eyebrow">Safety score</p>
+                <div className="mt-1"><ScoreFigure score={scan.score ?? 0} /></div>
+              </div>
+              <div className="space-y-2 sm:border-l sm:border-line sm:pl-10">
+                <ReadyBadge ready={ready} />
+                <p className="text-[15px] leading-relaxed text-ink-3">{verdict(counts, ready)}</p>
+              </div>
             </div>
+            <div className="mt-6"><CountTiles counts={counts} /></div>
           </section>
 
           {access === "titles" && report.findings.length > 0 && (
-            <section className="relative overflow-hidden rounded-2xl border border-line-2 bg-panel p-6">
-              <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-signal/15 text-signal ring-1 ring-signal/30"><LockIcon className="h-4 w-4" /></span>
-                <div className="flex-1">
-                  <h2 className="text-[16px] font-medium text-ink">Unlock the fixes</h2>
+            <section className="rounded-xl border border-line-2 bg-panel p-6">
+              <div className="relative">
+                <div>
+                  <h2 className="text-[16px] font-semibold text-ink">Unlock the fixes</h2>
                   <p className="mt-1 text-sm leading-relaxed text-ink-3">See where each problem lives, why it matters, and get a copy-paste prompt your AI agent can use to fix it.</p>
                 </div>
               </div>
@@ -109,10 +112,9 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
           )}
 
           {report.findings.length === 0 ? (
-            <section className="window relative overflow-hidden p-12 text-center">
-              <span className="relative mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-signal/15 text-signal ring-1 ring-signal/30"><CheckIcon className="h-5 w-5" /></span>
-              <h2 className="relative mt-4 text-xl font-medium text-ink">Nothing to fix</h2>
-              <p className="relative mt-1 text-ink-3">We didn’t find any of the problems we check for.</p>
+            <section className="window p-12 text-center">
+              <h2 className="text-xl font-semibold text-ink">Nothing to fix</h2>
+              <p className="mt-1 text-ink-3">We didn’t find any of the problems we check for.</p>
             </section>
           ) : (
             <section className="window">
@@ -122,7 +124,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
                     <div className="flex items-center gap-2.5 border-b border-line bg-panel-2 px-4 py-2.5 sm:px-5">
                       <SeverityIcon severity={sev} className="h-3.5 w-3.5" />
                       <h2 id={`sev-${sev}`} className="text-[13px] font-medium text-ink">{SEVERITY_LABELS[sev].label}</h2>
-                      <span className="font-mono text-[11px] text-ink-4">{report.bySeverity[sev].length}</span>
+                      <span className="text-[13px] text-ink-4 tabular-nums">{report.bySeverity[sev].length}</span>
                       <span className="ml-2 hidden truncate text-[12px] text-ink-4 md:inline">{SEVERITY_LABELS[sev].blurb}</span>
                     </div>
                     {report.bySeverity[sev].map((f, i) => (
@@ -138,25 +140,22 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
         <aside className="space-y-4 lg:sticky lg:top-[88px] lg:self-start">
           <ShareControls scanId={scan.id} shareToken={scan.share_token} initialPublic={scan.is_public} appUrl={env.appUrl} canBadge={ent.pro} productionReady={ready} />
           <div className="card p-4">
-            <h3 className="label-mono !text-[10px]">Checked areas</h3>
+            <h3 className="eyebrow">Checked areas</h3>
             <ul className="mt-3 space-y-2 text-[13px]">
               {Object.entries(CATEGORY_LABELS).map(([key, c]) => {
                 const items = report.findings.filter((f) => f.category === key);
-                const worst = (["critical", "high", "medium", "low"] as Severity[]).find((s) => items.some((f) => f.severity === s));
                 const skipped = key === "live_site" && !scan.site_url;
                 return (
                   <li key={key} className="flex items-center justify-between gap-2">
                     <span className="text-ink-2">{c.label}</span>
-                    {skipped ? <span className="text-[12px] text-ink-4">not checked</span>
-                      : worst ? <span className={`font-mono text-[11.5px] ${SEV[worst].text}`}>{items.length} to fix</span>
-                      : <span className="flex items-center gap-1 text-[12px] text-signal"><CheckIcon className="h-3 w-3" /> passed</span>}
+                    <AreaStatus count={items.length} checked={!skipped} />
                   </li>
                 );
               })}
             </ul>
           </div>
           <details className="card group p-4 text-[13px] text-ink-3">
-            <summary className="label-mono flex cursor-pointer list-none items-center justify-between !text-[10px]">About this scan <span className="transition group-open:rotate-45">+</span></summary>
+            <summary className="eyebrow flex cursor-pointer list-none items-center justify-between">About this scan <span className="text-ink-4 transition group-open:rotate-180">⌄</span></summary>
             <ul className="mt-3 space-y-1.5 leading-relaxed">
               <li>{scan.meta.filesScanned ?? 0} files read, then deleted.</li>
               <li>{scan.meta.aiReviewedFiles?.length ? `AI double-checked ${scan.meta.aiReviewedFiles.length} of the riskiest files.` : "AI review was not used for this scan."}</li>

@@ -100,7 +100,7 @@ async function main() {
   const share = await (await api(`/api/scans/${id}/share`, alice.cookie, { method: "POST", body: JSON.stringify({ public: true }) })).json();
   ok(share.public === true, "report made public");
   const pub = await (await fetch(`${APP}/r/${scan.share_token}`)).text();
-  ok(pub.includes("Not ready to launch yet") && !pub.includes("route.ts") && !pub.includes("Fix a security problem"), "public page shows the verdict but no files or fixes");
+  ok(pub.includes("Not ready to launch") && !pub.includes("route.ts") && !pub.includes("Fix a security problem"), "public page shows the verdict but no files or fixes");
   const badge1 = await (await fetch(`${APP}/api/badge/${scan.share_token}`)).text();
   ok(badge1.includes("badge needs Pro"), "badge requires Pro");
   await db`insert into subscriptions (user_id, stripe_subscription_id, status, current_period_end) values (${alice.id}, ${"sub_smoke_" + alice.id.slice(0, 8)}, 'active', now() + interval '30 days')`;

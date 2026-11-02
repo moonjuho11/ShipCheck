@@ -39,7 +39,7 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
           <CopyRow value={link} label="Public link" copied={copied === "link"} onCopy={() => copy(link, "link")} />
           {canBadge && productionReady ? (
             <div className="rounded-lg border border-line bg-black/30 p-3">
-              <p className="label-mono !text-[10px]">README badge</p>
+              <p className="eyebrow">README badge</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={badgeUrl} alt="ShipCheck badge" className="mt-2 h-5" />
               <div className="mt-2"><CopyRow value={markdown} label="Badge markdown" copied={copied === "badge"} onCopy={() => copy(markdown, "badge")} /></div>

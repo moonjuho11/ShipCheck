@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { scoreColor } from "@/components/ReportBits";
 import { ScanForm } from "@/components/ScanForm";
 import { ArrowRight, SeverityIcon } from "@/components/ui";
 import { env } from "@/lib/env";
@@ -22,11 +21,11 @@ export default async function Dashboard() {
     <div className="mx-auto max-w-6xl px-5 py-12">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p className="label-mono">Dashboard</p>
+          <p className="eyebrow">Dashboard</p>
           <h1 className="headline mt-3 text-[30px] sm:text-[36px]">Hi {user.name?.split(" ")[0] || user.github_login}.</h1>
           <p className="mt-2 flex items-center gap-2 text-sm text-ink-3">
-            <span className={`rounded-md px-1.5 py-0.5 font-mono text-[11px] ring-1 ring-inset ${ent.pro ? "bg-signal/10 text-signal ring-signal/30" : "bg-white/5 text-ink-2 ring-line-2"}`}>{plan}</span>
-            {ent.pro && ent.proUntil ? <span>renews {ent.proUntil.toLocaleDateString()}</span> : null}
+            <span>Plan: <span className="text-ink-2">{plan}</span></span>
+            {ent.pro && ent.proUntil ? <span>· Renews {ent.proUntil.toLocaleDateString()}</span> : null}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -44,7 +43,7 @@ export default async function Dashboard() {
         <section className="window min-w-0 self-start">
           <div className="flex items-center justify-between border-b border-line px-5 py-3">
             <h2 className="text-[13px] font-medium text-ink">Recent scans</h2>
-            <span className="font-mono text-[11px] text-ink-4">{scans.length}</span>
+            <span className="text-[13px] text-ink-4 tabular-nums">{scans.length}</span>
           </div>
           {scans.length === 0 ? (
             <div className="px-6 py-16 text-center">
@@ -60,19 +59,19 @@ export default async function Dashboard() {
                     <ScoreChip score={s.score} status={s.status} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[14px] text-ink">{s.repo_full_name}</p>
-                      <p className="mt-0.5 truncate font-mono text-[11px] text-ink-4">
+                      <p className="mt-0.5 truncate text-[12px] text-ink-4">
                         {s.created_at.toLocaleString()}{s.trigger === "pr" ? ` · PR #${s.pr_number}` : ""}
                       </p>
                     </div>
                     {s.status === "completed" ? (
-                      <div className="hidden items-center gap-3 font-mono text-[11.5px] sm:flex">
+                      <div className="hidden items-center gap-4 text-[13px] tabular-nums sm:flex">
                         {(["critical", "high"] as const).map((k) => (
                           <span key={k} className={`flex items-center gap-1.5 ${s.counts[k] ? "text-ink-2" : "text-ink-4"}`}><SeverityIcon severity={k} className="h-3 w-3" />{s.counts[k] ?? 0}</span>
                         ))}
-                        {s.production_ready && <span className="rounded-md bg-signal/10 px-1.5 py-0.5 text-[10.5px] text-signal ring-1 ring-signal/25 ring-inset">READY</span>}
+                        <span className="w-16 text-right text-ink-3">{s.production_ready ? "Ready" : "Not ready"}</span>
                       </div>
                     ) : (
-                      <span className={`font-mono text-[11px] uppercase ${s.status === "failed" ? "text-high" : "text-ink-3"}`}>{s.status === "failed" ? "failed" : "scanning…"}</span>
+                      <span className="text-[13px] text-ink-3">{s.status === "failed" ? "Failed" : "Scanning…"}</span>
                     )}
                     <ArrowRight className="h-3.5 w-3.5 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-ink-2" />
                   </Link>
@@ -82,7 +81,7 @@ export default async function Dashboard() {
           )}
         </section>
         <aside className="space-y-3">
-          <p className="label-mono">New scan</p>
+          <p className="eyebrow">New scan</p>
           <ScanForm signedIn hasPrivateAccess={privateAccess} compact />
         </aside>
       </div>
@@ -91,7 +90,5 @@ export default async function Dashboard() {
 }
 
 function ScoreChip({ score, status }: { score: number | null; status: string }) {
-  if (status !== "completed") return <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] font-mono text-xs text-ink-4">{status === "failed" ? "—" : "··"}</span>;
-  const c = scoreColor(score ?? 0);
-  return <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border font-mono text-[14px] font-medium tabular-nums" style={{ color: c, borderColor: `${c}40`, background: `${c}14` }}>{score}</span>;
+  return <span className="w-9 shrink-0 text-right text-[17px] font-semibold text-ink tabular-nums">{status === "completed" ? score : "–"}</span>;
 }

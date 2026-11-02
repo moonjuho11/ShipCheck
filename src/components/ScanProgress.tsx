@@ -45,40 +45,39 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
         </div>
         <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <div className="flex items-center gap-2.5">
-            <Spinner className="h-4 w-4 text-signal" />
+            <Spinner className="h-4 w-4 text-ink-3" />
             <span className="text-[14px] font-medium text-ink">{status === "queued" ? "Waiting for a free scanner…" : "Checking your app"}</span>
           </div>
-          <span className="font-mono text-[12px] text-ink-3 tabular-nums">{elapsed.toFixed(1)}s</span>
+          <span className="text-[13px] text-ink-3 tabular-nums">{elapsed.toFixed(1)}s</span>
         </div>
         <ol className="px-2 py-2">
-          {steps.map((s, i) => (
+          {steps.map((s) => (
             <li key={s.key} className={`flex items-start gap-3 rounded-lg px-3 py-2 ${s.status === "running" ? "bg-white/[0.04]" : ""}`}>
-              <span className="mt-0.5 w-5 font-mono text-[11px] text-ink-4">{String(i + 1).padStart(2, "0")}</span>
               <StepIcon status={s.status} />
               <div className="min-w-0 flex-1">
                 <p className={`text-[14px] ${s.status === "pending" ? "text-ink-4" : s.status === "skipped" ? "text-ink-4 line-through decoration-ink-4/60" : s.status === "running" ? "text-ink" : "text-ink-2"}`}>{s.label}</p>
-                {s.detail && <p className="mt-0.5 font-mono text-[11px] text-ink-4">{s.detail}</p>}
+                {s.detail && <p className="mt-0.5 text-[12px] text-ink-4">{s.detail}</p>}
               </div>
-              <span className={`mt-0.5 font-mono text-[10.5px] tracking-wide uppercase ${s.status === "done" ? "text-signal" : s.status === "running" ? "text-ink-2" : s.status === "failed" ? "text-high" : "text-ink-4"}`}>
-                {s.status === "running" ? "running" : s.status === "pending" ? "" : s.status}
-              </span>
+              <span className="mt-0.5 text-[12px] text-ink-4">{STATUS_TEXT[s.status]}</span>
             </li>
           ))}
         </ol>
-        <div className="flex items-center justify-between border-t border-line bg-black/25 px-5 py-2.5 font-mono text-[11px] text-ink-4">
+        <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-[12px] text-ink-4">
           <span className="truncate">{repo}</span>
-          <span>you can close this tab — we’ll keep going</span>
+          <span>You can close this tab; the scan keeps running.</span>
         </div>
       </div>
     </div>
   );
 }
 
+const STATUS_TEXT: Record<Step["status"], string> = { done: "Done", running: "Running", pending: "", skipped: "Skipped", failed: "Failed" };
+
 function StepIcon({ status }: { status: Step["status"] }) {
   const base = "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full";
-  if (status === "done") return <span className={`${base} bg-signal/15 text-signal`}><CheckIcon className="h-3 w-3" /></span>;
-  if (status === "running") return <span className={`${base} text-signal`}><Spinner className="h-[18px] w-[18px]" /></span>;
-  if (status === "failed") return <span className={`${base} bg-high/15 font-mono text-[10px] text-high`}>!</span>;
+  if (status === "done") return <span className={`${base} text-ink-2`}><CheckIcon className="h-3.5 w-3.5" /></span>;
+  if (status === "running") return <span className={`${base} text-ink-2`}><Spinner className="h-4 w-4" /></span>;
+  if (status === "failed") return <span className={`${base} text-[12px] font-semibold text-ink-2`}>!</span>;
   if (status === "skipped") return <span className={`${base} border border-line-2 text-[10px] text-ink-4`}>–</span>;
   return <span className={`${base} border border-dashed border-line-2`} />;
 }
