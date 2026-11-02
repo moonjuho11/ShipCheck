@@ -24,15 +24,14 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
   return (
     <div className="relative overflow-hidden">
       <div className="relative mx-auto max-w-2xl px-5 py-16">
-        <p className="eyebrow text-center">Seaproof safety report</p>
-        <h1 className="headline mt-4 text-center text-[30px] sm:text-[40px]">{s.repo}</h1>
+        <h1 className="headline text-center text-[30px] sm:text-[40px]">{s.repo}</h1>
         <p className="mt-2 text-center text-[13px] text-ink-4">
-          Scanned {s.finishedAt?.toLocaleDateString()}{s.commitSha ? <> · Commit <span className="font-mono">{s.commitSha.slice(0, 7)}</span></> : null}
+          {s.finishedAt?.toLocaleDateString()}
         </p>
         <Reveal onMount delay={0.1} y={12} className="window mt-10">
           <div className="p-6 sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-6">
-              <div><p className="eyebrow">Safety score</p><div className="mt-1"><ScoreFigure score={s.score} /></div></div>
+              <ScoreFigure score={s.score} />
               <ReadyBadge ready={s.productionReady} />
             </div>
             <div className="mt-6"><CountTiles counts={s.counts} /></div>
@@ -40,14 +39,14 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
           <ul className="border-t border-line">
             {s.areas.map((a) => (
               <li key={a.key} className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5 last:border-0">
-                <div><p className="text-[14px] text-ink">{a.label}</p><p className="text-[12px] text-ink-4">{a.blurb}</p></div>
+                <p className="text-[14px] text-ink">{a.label}</p>
                 <AreaStatus count={a.count} checked={!(a.key === "live_site" && !s.liveChecked)} />
               </li>
             ))}
           </ul>
         </Reveal>
-        <p className="mt-8 text-center text-sm text-ink-4">
-          Details are visible only to the app’s owner. <Link href="/" className="inline-flex items-center gap-1 text-ink-2 hover:text-ink">Check your own app <ArrowRight className="h-3 w-3" /></Link>
+        <p className="mt-8 text-center text-sm">
+          <Link href="/" className="inline-flex items-center gap-1 text-ink-2 hover:text-ink">Check your own app <ArrowRight className="h-3 w-3" /></Link>
         </p>
       </div>
     </div>

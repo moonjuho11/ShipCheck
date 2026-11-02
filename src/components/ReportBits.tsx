@@ -11,13 +11,10 @@ export function ScoreFigure({ score, size = "lg" }: { score: number; size?: "lg"
   );
 }
 
-/** Verdict stated in words — no pill, no dot. */
+/** Verdict stated in words. */
 export function ReadyBadge({ ready }: { ready: boolean }) {
   return (
-    <div>
-      <p className="eyebrow">Verdict</p>
-      <p className="mt-1 text-[17px] font-semibold text-ink">{ready ? "Production ready" : "Not ready to launch"}</p>
-    </div>
+    <p className="text-[17px] font-semibold text-ink">{ready ? "Production ready" : "Not ready to launch"}</p>
   );
 }
 

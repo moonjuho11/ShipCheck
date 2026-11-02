@@ -1,11 +1,6 @@
 import type { ReactNode } from "react";
 import type { Severity } from "@/scanner/types";
 
-/** Small section label. (index/total kept for call-site compatibility; not displayed.) */
-export function BracketLabel({ children, className = "" }: { index?: number; total?: number; children: ReactNode; className?: string }) {
-  return <p className={`eyebrow ${className}`}>{children}</p>;
-}
-
 /** A small "+" registration mark used on grid intersections. */
 export function Cross({ className = "" }: { className?: string }) {
   return (

@@ -22,8 +22,7 @@ export default async function Dashboard() {
     <div className="mx-auto max-w-6xl px-5 py-12">
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p className="eyebrow">Dashboard</p>
-          <h1 className="headline mt-3 text-[30px] sm:text-[36px]">Hi {user.name?.split(" ")[0] || user.github_login}.</h1>
+          <h1 className="headline text-[30px] sm:text-[36px]">Hi {user.name?.split(" ")[0] || user.github_login}.</h1>
           <p className="mt-2 flex items-center gap-2 text-sm text-ink-3">
             <span>Plan: <span className="text-ink-2">{plan}</span></span>
             {ent.pro && ent.proUntil ? <span>· Renews {ent.proUntil.toLocaleDateString()}</span> : null}
@@ -48,8 +47,7 @@ export default async function Dashboard() {
           </div>
           {scans.length === 0 ? (
             <div className="px-6 py-16 text-center">
-              <p className="mt-2 text-ink-2">No scans yet</p>
-              <p className="mt-1 text-sm text-ink-4">Paste a repo on the right to run your first one.</p>
+              <p className="text-ink-3">No scans yet</p>
             </div>
           ) : (
             <Stagger as="ul" onMount gap={0.04} delay={0.1}>
@@ -80,9 +78,8 @@ export default async function Dashboard() {
             </Stagger>
           )}
         </Reveal>
-        <aside className="space-y-3">
-          <p className="eyebrow">New scan</p>
-          <ScanForm signedIn hasPrivateAccess={privateAccess} compact />
+        <aside>
+          <ScanForm signedIn compact />
         </aside>
       </div>
     </div>

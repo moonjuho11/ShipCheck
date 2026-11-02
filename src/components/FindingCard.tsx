@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ReportFinding } from "@/lib/report";
 import { Collapse, SwapText } from "./motion";
-import { CheckIcon, LockIcon, SeverityIcon, SeverityTag } from "./ui";
+import { CheckIcon, LockIcon, SeverityIcon } from "./ui";
 
 /** Linear-style issue row that expands into the full explanation + fix prompt. */
 export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFinding; categoryLabel: string; defaultOpen?: boolean }) {
@@ -31,7 +31,6 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
           <p className="text-[14px] leading-snug text-ink"><Rich text={f.title} /></p>
           {f.file && <p className="mt-0.5 truncate font-mono text-[11.5px] text-ink-4">{f.file}{f.line ? `:${f.line}` : ""}{f.evidence ? `  ·  ${f.evidence}` : ""}</p>}
         </div>
-        {f.aiWritten && <span className="hidden text-[12px] text-ink-4 sm:inline">Found by AI review</span>}
         <span className="hidden text-[12px] text-ink-4 md:inline">{categoryLabel}</span>
         {locked ? (
           <LockIcon className="h-3.5 w-3.5 shrink-0 text-ink-4" />
@@ -41,20 +40,12 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
       </button>
       <Collapse open={open && !locked}>
         <div className="grid gap-5 px-4 pt-1 pb-5 sm:px-5 sm:pl-12 lg:grid-cols-[1fr_1.15fr]">
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-2"><SeverityTag severity={f.severity} /><span className="text-[12px] text-ink-4">{categoryLabel}</span></div>
-            <section>
-              <h4 className="eyebrow">What’s wrong</h4>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.explanation!} /></p>
-            </section>
-            <section>
-              <h4 className="eyebrow">Why it matters</h4>
-              <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.whyItMatters!} /></p>
-            </section>
+          <div className="space-y-3 text-[14px] leading-relaxed">
+            <p className="text-ink-2"><Rich text={f.explanation!} /></p>
+            <p className="text-ink-3"><Rich text={f.whyItMatters!} /></p>
           </div>
           <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel-2">
-            <div className="flex items-center justify-between gap-2 border-b border-line px-3.5 py-2">
-              <h4 className="eyebrow truncate">Fix prompt <span className="hidden text-ink-4 sm:inline">· paste into your AI tool</span></h4>
+            <div className="flex items-center justify-end border-b border-line px-3.5 py-2">
               <button type="button" onClick={copy} className={`flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2.5 whitespace-nowrap text-[12px] font-medium transition ${copied ? "bg-accent text-white" : "bg-ink text-canvas hover:bg-white"}`}>
                 <SwapText active={copied} idle="Copy prompt" done={<><CheckIcon className="h-3 w-3" /> Copied</>} />
               </button>
