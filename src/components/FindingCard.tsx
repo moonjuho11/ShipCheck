@@ -30,7 +30,7 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
           <p className="text-[14px] leading-snug text-ink"><Rich text={f.title} /></p>
           {f.file && <p className="mt-0.5 truncate font-mono text-[11.5px] text-ink-4">{f.file}{f.line ? `:${f.line}` : ""}{f.evidence ? `  ·  ${f.evidence}` : ""}</p>}
         </div>
-        {f.aiWritten && <span className="hidden rounded-md bg-[#8b6cff]/12 px-1.5 py-0.5 text-[10.5px] font-medium text-[#b9a6ff] ring-1 ring-[#8b6cff]/25 ring-inset sm:inline">AI review</span>}
+        {f.aiWritten && <span className="hidden rounded-md bg-white/[0.05] px-1.5 py-0.5 text-[10.5px] font-medium text-ink-3 ring-1 ring-line-2 ring-inset sm:inline">AI review</span>}
         <span className="hidden text-[12px] text-ink-4 md:inline">{categoryLabel}</span>
         {locked ? (
           <LockIcon className="h-3.5 w-3.5 shrink-0 text-ink-4" />

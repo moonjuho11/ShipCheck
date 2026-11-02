@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { FigExplain, FigFix, FigSandbox } from "@/components/landing/Figures";
-import { HeroBackdrop } from "@/components/landing/HeroBackdrop";
 import { ReportPreview } from "@/components/landing/ReportPreview";
 import { ScanTerminal } from "@/components/landing/ScanTerminal";
 import { ScanForm } from "@/components/ScanForm";
@@ -38,19 +37,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <div className="-mt-[68px]">
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-[68px]">
-        <HeroBackdrop />
+        <div aria-hidden className="bg-grid fade-edges pointer-events-none absolute inset-0 opacity-60" />
         <div className="relative mx-auto max-w-4xl px-5 pt-24 pb-16 text-center sm:pt-32">
-          <Link href="#how" className="group inline-flex items-center gap-2 rounded-full border border-line-2 bg-black/40 py-1 pr-3 pl-1 text-[13px] text-ink-2 backdrop-blur transition hover:border-white/25">
-            <span className="rounded-full bg-signal/15 px-2 py-0.5 font-mono text-[10px] font-semibold tracking-wider text-signal uppercase">New</span>
-            AI second opinion on every scan
-            <ArrowRight className="h-3 w-3 text-ink-3 transition group-hover:translate-x-0.5" />
-          </Link>
-          <h1 className="display mt-7 text-[44px] sm:text-[68px] lg:text-[80px]">
-            <span className="text-sheen">Is your vibe-coded app</span>
-            <br />
-            <span className="serif-accent text-signal">safe</span> <span className="text-sheen">to launch?</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-ink-3 sm:text-lg">
+          <p className="label-mono">Pre-launch security audit for AI-built apps</p>
+          <h1 className="display mt-6 text-[40px] text-balance sm:text-[56px] lg:text-[64px]">Is your vibe-coded app<br className="hidden sm:block" /> safe to launch?</h1>
+          <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-balance text-ink-3 sm:text-lg">
             ShipCheck finds leaked keys, open databases and pages that skip the login — then writes the prompt your AI agent needs to fix each one.
           </p>
           <div id="scan" className="mx-auto mt-10 max-w-2xl scroll-mt-28">
@@ -110,7 +101,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <div className="flex flex-col gap-6 px-6 py-16 sm:flex-row sm:items-end sm:justify-between sm:px-10">
           <div>
             <BracketLabel index={1} total={7}>What we check</BracketLabel>
-            <h2 className="headline mt-5 max-w-xl text-[32px] sm:text-[44px]">The problems that hurt AI-built apps <span className="serif-accent text-ink-3">first.</span></h2>
+            <h2 className="headline mt-5 max-w-xl text-[32px] text-balance sm:text-[44px]">The problems that hurt AI-built apps first.</h2>
           </div>
           <p className="max-w-sm text-ink-3">Seven areas, checked with proven open-source scanners plus checks built specifically for Supabase, Firebase and Next.js apps.</p>
         </div>
@@ -127,8 +118,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             </div>
           ))}
           <div className="relative flex min-w-0 flex-col justify-between overflow-hidden border-b border-line p-6 sm:p-8 lg:col-span-2">
-            <div aria-hidden className="absolute -right-10 -bottom-16 h-56 w-56 rounded-full bg-[#8b6cff]/20 blur-3xl" />
-            <span className="font-mono text-[11px] text-[#b9a6ff]">+ AI</span>
+            <span className="font-mono text-[11px] text-ink-4">+ AI</span>
             <div className="relative">
               <h3 className="mt-6 text-[17px] font-medium text-ink">A second opinion from Claude</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-3">Reviews your riskiest files, removes false alarms, and explains each problem for your exact code.</p>
@@ -141,7 +131,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <Section id="how" className="grid scroll-mt-24 gap-12 px-6 py-20 sm:px-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
         <div>
           <BracketLabel index={2} total={7}>How it works</BracketLabel>
-          <h2 className="headline mt-5 text-[32px] sm:text-[44px]">From “is this safe?” to <span className="serif-accent text-signal">fixed</span> in a minute.</h2>
+          <h2 className="headline mt-5 text-[32px] sm:text-[44px]">From “is this safe?” to fixed <span className="text-ink-4">in about a minute.</span></h2>
           <ol className="mt-10 space-y-0 border-l border-line">
             {[
               ["Paste your repo", "Public or private GitHub repos. Add your live site for extra checks."],
@@ -201,7 +191,7 @@ Please:
       <Section id="privacy" className="scroll-mt-24 px-6 py-20 sm:px-10">
         <BracketLabel index={4} total={7}>Privacy</BracketLabel>
         <div className="mt-5 grid gap-10 lg:grid-cols-[1fr_1.4fr]">
-          <h2 className="headline text-[32px] sm:text-[44px]">Your code stays <span className="serif-accent text-signal">yours.</span></h2>
+          <h2 className="headline text-[32px] sm:text-[44px]">Your code stays yours.</h2>
           <div className="grid grid-cols-1 border-t border-l border-line sm:grid-cols-2">
             {[
               ["Never executed", "No installs, builds or scripts. We only read files."],
@@ -210,7 +200,7 @@ Please:
               ["Least access", "Public repos need no permissions. Private access is optional and read-only."],
             ].map(([t, b]) => (
               <div key={t} className="border-r border-b border-line p-6">
-                <p className="flex items-center gap-2 text-[15px] font-medium text-ink"><span className="h-1.5 w-1.5 rounded-full bg-signal" />{t}</p>
+                <p className="flex items-center gap-2 text-[15px] font-medium text-ink">{t}</p>
                 <p className="mt-2 text-sm leading-relaxed text-ink-3">{b}</p>
               </div>
             ))}
@@ -232,8 +222,8 @@ Please:
             ["Free", "$0", "1 scan a month · see every problem’s title"],
             ["Repo Pass", "$29", "Full report + fix prompts for one repo · 5 rescans"],
             ["Pro", "$49/mo", "Unlimited scans · PR checks · Production Ready badge"],
-          ].map(([n, p, d], i) => (
-            <div key={n} className={`bg-panel p-6 ${i === 1 ? "bg-[linear-gradient(180deg,rgb(62_232_143/0.07),transparent_60%)]" : ""}`}>
+          ].map(([n, p, d]) => (
+            <div key={n} className="bg-panel p-6">
               <p className="label-mono">{n}</p>
               <p className="mt-3 text-3xl font-medium tracking-tight text-ink">{p}</p>
               <p className="mt-2 text-sm text-ink-3">{d}</p>
@@ -263,14 +253,12 @@ Please:
 
       {/* ── Final CTA ───────────────────────────────────────── */}
       <Section className="relative overflow-hidden px-6 py-28 text-center">
-        <div aria-hidden className="bg-dots fade-edges absolute inset-0" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 mx-auto h-40 max-w-xl rounded-full bg-signal/15 blur-3xl" />
         <Cross className="absolute top-1/2 left-6 hidden sm:block" />
         <Cross className="absolute top-1/2 right-6 hidden sm:block" />
         <div className="relative">
           <BracketLabel index={7} total={7} className="justify-center">Ship it</BracketLabel>
-          <h2 className="display mt-6 text-[48px] sm:text-[72px]"><span className="text-sheen">Launch with</span> <span className="serif-accent text-signal">confidence.</span></h2>
-          <p className="mx-auto mt-5 max-w-md text-ink-3">One minute now beats a leaked database next week.</p>
+          <h2 className="display mt-6 text-[36px] sm:text-[52px]">Check it before you launch it.</h2>
+          <p className="mx-auto mt-5 max-w-md text-ink-3">A one-minute scan now costs less than a leaked database later.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
             <a href="#scan" className="btn-signal !h-11 !px-5">Scan my app <ArrowRight /></a>
             <Link href="/pricing" className="btn-ghost !h-11 !px-5">See pricing</Link>

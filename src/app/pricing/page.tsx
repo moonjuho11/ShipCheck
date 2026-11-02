@@ -38,14 +38,14 @@ export default async function Pricing() {
         <div aria-hidden className="bg-grid fade-edges absolute inset-0" />
         <div className="relative mx-auto max-w-3xl px-5 pt-20 pb-14 text-center">
           <BracketLabel className="justify-center">Pricing</BracketLabel>
-          <h1 className="display mt-6 text-[44px] sm:text-[64px]"><span className="text-sheen">Start free.</span> <span className="serif-accent text-signal">Pay for fixes.</span></h1>
+          <h1 className="display mt-6 text-[40px] sm:text-[56px]">Start free. <span className="text-ink-4">Pay for the fixes.</span></h1>
           <p className="mx-auto mt-5 max-w-md text-ink-3">Every plan includes the full scan. Paid plans unlock where each problem lives and how to fix it.</p>
         </div>
       </div>
 
       <Section className="grid gap-px bg-line lg:grid-cols-3">
         {TIERS.map((t) => (
-          <div key={t.key} className={`relative flex flex-col bg-canvas p-7 sm:p-8 ${"highlight" in t ? "bg-[linear-gradient(180deg,rgb(62_232_143/0.08),transparent_45%)]" : ""}`}>
+          <div key={t.key} className={`relative flex flex-col bg-canvas p-7 sm:p-8 ${"highlight" in t ? "bg-panel" : ""}`}>
             {"highlight" in t && <span className="absolute top-7 right-7 rounded-full bg-signal/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-signal uppercase ring-1 ring-signal/30">Before launch</span>}
             <p className="label-mono">{t.name}</p>
             <p className="mt-1 text-sm text-ink-3">{t.tagline}</p>

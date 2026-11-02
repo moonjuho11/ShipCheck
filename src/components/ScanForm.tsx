@@ -88,7 +88,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
         <div className="hidden min-w-0 items-center gap-1.5 overflow-hidden md:flex">
           {CHECKS.slice(0, compact ? 3 : 5).map((c) => (
             <span key={c} className="flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] whitespace-nowrap text-ink-3">
-              <span className="h-1 w-1 rounded-full bg-signal/70" />{c}
+              <span className="h-1 w-1 rounded-full bg-ink-4" />{c}
             </span>
           ))}
           <span className="px-1 text-[11px] whitespace-nowrap text-ink-4">+{CHECKS.length - (compact ? 3 : 5)} more</span>

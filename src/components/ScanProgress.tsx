@@ -39,10 +39,9 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
 
   return (
     <div className="relative mx-auto max-w-2xl">
-      <div aria-hidden className="absolute -inset-10 rounded-[48px] bg-signal/[0.07] blur-3xl" />
       <div className="window relative">
         <div className="h-px w-full bg-line">
-          <div className="h-px bg-signal shadow-[0_0_12px_rgb(62_232_143)] transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
+          <div className="h-px bg-signal transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
         </div>
         <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <div className="flex items-center gap-2.5">

@@ -52,14 +52,7 @@ export function SiteFooter() {
       </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-t border-line px-6 py-4">
         <span className="label-mono">© {new Date().getFullYear()} ShipCheck</span>
-        <span className="label-mono flex items-center gap-2"><span className="pulse-dot h-1.5 w-1.5 rounded-full bg-signal" /> All systems scanning</span>
-      </div>
-      <div aria-hidden className="pointer-events-none overflow-hidden">
-        <div className="mx-auto flex max-w-6xl items-end justify-center border-x border-line px-6 pt-6">
-          <span className="select-none bg-gradient-to-b from-white/[0.07] to-transparent bg-clip-text text-[19vw] leading-[0.8] font-semibold tracking-[-0.06em] text-transparent lg:text-[220px]">
-            ShipCheck
-          </span>
-        </div>
+        <span className="label-mono">Your code is never stored</span>
       </div>
     </footer>
   );

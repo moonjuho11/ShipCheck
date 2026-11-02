@@ -14,7 +14,6 @@ const ROWS: { sev: Severity; title: string; file: string; area: string }[] = [
 export function ReportPreview() {
   return (
     <div className="relative">
-      <div aria-hidden className="absolute -inset-x-10 -top-10 bottom-10 rounded-[40px] bg-signal/10 blur-3xl" />
       <div className="window relative">
         <div className="flex items-center gap-2 border-b border-line bg-panel-2/60 px-4 py-2.5">
           <span className="h-3 w-3 rounded-full bg-white/10" /><span className="h-3 w-3 rounded-full bg-white/10" /><span className="h-3 w-3 rounded-full bg-white/10" />

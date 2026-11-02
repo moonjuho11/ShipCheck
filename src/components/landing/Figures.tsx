@@ -7,7 +7,7 @@ function iso(x: number, y: number, z: number): [number, number] {
 const pts = (...p: [number, number, number][]) => p.map((q) => iso(...q).join(",")).join(" ");
 
 function Box({ x, y, z, w, d, h, accent = false }: { x: number; y: number; z: number; w: number; d: number; h: number; accent?: boolean }) {
-  const st = accent ? { ...S, stroke: "rgb(62 232 143 / 0.8)" } : S;
+  const st = accent ? { ...S, stroke: "rgb(255 255 255 / 0.7)" } : S;
   return (
     <g>
       <polygon {...st} points={pts([x, y, z + h], [x + w, y, z + h], [x + w, y + d, z + h], [x, y + d, z + h])} />
@@ -39,7 +39,7 @@ export function FigExplain() {
       {[0, 1, 2].map((i) => {
         const [x1, y1] = iso(-50 + 30, -20 + 30 + i * 12, 84);
         const [x2, y2] = iso(-50 + 30 + 60 - i * 15, -20 + 30 + i * 12, 84);
-        return <line key={i} stroke="rgb(62 232 143 / 0.6)" strokeWidth="1.5" strokeLinecap="round" x1={x1} y1={y1} x2={x2} y2={y2} />;
+        return <line key={i} stroke="rgb(255 255 255 / 0.55)" strokeWidth="1.5" strokeLinecap="round" x1={x1} y1={y1} x2={x2} y2={y2} />;
       })}
     </svg>
   );

@@ -23,7 +23,6 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
   return (
     <div className="relative overflow-hidden">
       <div aria-hidden className="bg-grid fade-edges absolute inset-0" />
-      <div aria-hidden className="absolute inset-x-0 top-24 mx-auto h-72 max-w-lg rounded-full blur-3xl" style={{ background: s.productionReady ? "rgb(62 232 143 / 0.14)" : "rgb(255 92 92 / 0.10)" }} />
       <div className="relative mx-auto max-w-2xl px-5 py-16">
         <p className="label-mono text-center">ShipCheck safety report</p>
         <h1 className="headline mt-4 text-center text-[30px] sm:text-[40px]">{s.repo}</h1>

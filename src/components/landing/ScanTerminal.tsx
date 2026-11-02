@@ -11,7 +11,7 @@ const LINES: [string, string, string][] = [
   ["08.1s", "done", "score 38/100 · 6 issues · code deleted ✓"],
 ];
 
-const TAG: Record<string, string> = { found: "text-crit", done: "text-signal", ai: "text-[#b9a6ff]" };
+const TAG: Record<string, string> = { found: "text-crit", done: "text-signal", ai: "text-ink-2" };
 
 /** Animated scan log (pure CSS — lines reveal with staggered delays). */
 export function ScanTerminal() {
@@ -19,7 +19,7 @@ export function ScanTerminal() {
     <div className="window">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
         <span className="label-mono !text-[10px]">scan · acme/taskpal</span>
-        <span className="flex items-center gap-1.5 font-mono text-[10px] text-signal"><span className="pulse-dot h-1.5 w-1.5 rounded-full bg-signal" />live</span>
+        <span className="flex items-center gap-1.5 font-mono text-[10px] text-signal"><span className="h-1.5 w-1.5 rounded-full bg-signal" />live</span>
       </div>
       <ol className="space-y-1.5 p-4 font-mono text-[12px] leading-relaxed">
         {LINES.map(([t, tag, msg], i) => (

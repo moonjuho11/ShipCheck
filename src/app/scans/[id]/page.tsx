@@ -93,8 +93,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
           </section>
 
           {access === "titles" && report.findings.length > 0 && (
-            <section className="relative overflow-hidden rounded-2xl border border-signal/25 bg-[linear-gradient(135deg,rgb(62_232_143/0.10),transparent_55%)] p-6">
-              <div aria-hidden className="bg-dots absolute inset-0 opacity-50 [mask-image:linear-gradient(to_left,black,transparent_60%)]" />
+            <section className="relative overflow-hidden rounded-2xl border border-line-2 bg-panel p-6">
               <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-signal/15 text-signal ring-1 ring-signal/30"><LockIcon className="h-4 w-4" /></span>
                 <div className="flex-1">
@@ -111,7 +110,6 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
 
           {report.findings.length === 0 ? (
             <section className="window relative overflow-hidden p-12 text-center">
-              <div aria-hidden className="absolute inset-x-0 top-0 mx-auto h-40 max-w-sm rounded-full bg-signal/15 blur-3xl" />
               <span className="relative mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-signal/15 text-signal ring-1 ring-signal/30"><CheckIcon className="h-5 w-5" /></span>
               <h2 className="relative mt-4 text-xl font-medium text-ink">Nothing to fix</h2>
               <p className="relative mt-1 text-ink-3">We didn’t find any of the problems we check for.</p>
