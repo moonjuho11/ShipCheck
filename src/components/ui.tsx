@@ -34,7 +34,7 @@ export const SEV: Record<Severity, { label: string; color: string; text: string;
   critical: { label: "Critical", color: "#ff5c5c", text: "text-crit", bg: "bg-crit/10", ring: "ring-crit/25" },
   high: { label: "High", color: "#ff9a3d", text: "text-high", bg: "bg-high/10", ring: "ring-high/25" },
   medium: { label: "Medium", color: "#f2cf4a", text: "text-med", bg: "bg-med/10", ring: "ring-med/25" },
-  low: { label: "Low", color: "#5eb0ff", text: "text-low", bg: "bg-low/10", ring: "ring-low/25" },
+  low: { label: "Low", color: "#8f8f8f", text: "text-low", bg: "bg-low/10", ring: "ring-low/25" },
 };
 
 /** Linear-style priority glyph: filled bars for severity. */

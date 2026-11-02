@@ -257,7 +257,7 @@ Please:
           <h2 className="display mt-6 text-[36px] sm:text-[52px]">Check it before you launch it.</h2>
           <p className="mx-auto mt-5 max-w-md text-ink-3">A one-minute scan now costs less than a leaked database later.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href="#scan" className="btn-signal !h-11 !px-5">Scan my app <ArrowRight /></a>
+            <a href="#scan" className="btn-accent !h-11 !px-5">Scan my app <ArrowRight /></a>
             <Link href="/pricing" className="btn-ghost !h-11 !px-5">See pricing</Link>
           </div>
         </div>

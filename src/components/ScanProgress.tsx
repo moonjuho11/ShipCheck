@@ -41,7 +41,7 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
     <div className="relative mx-auto max-w-2xl">
       <div className="window relative">
         <div className="h-px w-full bg-line">
-          <div className="h-px bg-signal transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
+          <div className="h-px bg-accent transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
         </div>
         <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <div className="flex items-center gap-2.5">

@@ -6,30 +6,31 @@
  * severity colours mean severity. No decorative glows or gradients.
  */
 :root {
-  --canvas: #161819;
+  --canvas: #000000;
   color-scheme: dark;
 }
 
 @theme inline {
-  /* Surfaces sampled from Linear: cards sit almost flush with the page and are
-     separated by hairlines, not by contrast or shadow. Nested boxes go slightly
-     lighter, never darker. */
-  --color-canvas: #161819;
-  --color-panel: #1b1c1e;
-  --color-panel-2: #222426;
-  --color-panel-3: #2a2c2e;
-  --color-line: #26282a;
-  --color-line-2: #303235;
-  --color-ink: #f7f8f8;
-  --color-ink-2: #c9ccd1;
-  --color-ink-3: #8a8f98;
-  --color-ink-4: #5b5f68;
-  --color-signal: #34d17f;
-  --color-signal-2: #27b56b;
+  /* Black canvas; cards lift only a hair off it and are separated by hairlines
+     (the Vercel/Linear model). Nested boxes go slightly lighter, never darker.
+     Accent is cobalt blue — reserved for the primary action, focus and toggles. */
+  --color-canvas: #000000;
+  --color-panel: #0a0a0a;
+  --color-panel-2: #111111;
+  --color-panel-3: #171717;
+  --color-line: #1f1f1f;
+  --color-line-2: #2e2e2e;
+  --color-ink: #ededed;
+  --color-ink-2: #c2c2c2;
+  --color-ink-3: #8f8f8f;
+  --color-ink-4: #5e5e5e;
+  --color-accent: #2f6fed;
+  --color-accent-hover: #4380f5;
+  --color-accent-ink: #6ea1ff;
   --color-crit: #ff5c5c;
   --color-high: #ff9a3d;
   --color-med: #f2cf4a;
-  --color-low: #5eb0ff;
+  --color-low: #8f8f8f;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }
@@ -43,7 +44,7 @@ body {
   font-feature-settings: "cv11", "ss01", "ss03";
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: rgb(255 255 255 / 0.18); color: #fff; }
+::selection { background: rgb(47 111 237 / 0.45); color: #fff; }
 
 /* ── Surfaces ─────────────────────────────────────────── */
 @utility card {
@@ -68,13 +69,13 @@ body {
 
 /* ── Controls ─────────────────────────────────────────── */
 @utility btn {
-  @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-not-allowed disabled:opacity-50;
 }
 @utility btn-white {
   @apply btn bg-ink text-canvas hover:bg-white;
 }
-@utility btn-signal {
-  @apply btn bg-signal text-[#04150b] hover:bg-[#4ddb8f];
+@utility btn-accent {
+  @apply btn bg-accent text-white hover:bg-accent-hover;
 }
 @utility btn-ghost {
   @apply btn border border-line-2 bg-panel text-ink-2 hover:bg-panel-2 hover:text-ink;

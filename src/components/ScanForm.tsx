@@ -96,7 +96,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
         <p className="text-[11px] text-ink-4 md:hidden">
           {signedIn ? (hasPrivateAccess ? "Public & private repos" : "Public repos") : "Sign in with GitHub to scan"}
         </p>
-        <button type="submit" disabled={busy} className="btn-signal !h-9 shrink-0 !px-4">
+        <button type="submit" disabled={busy} className="btn-accent !h-9 shrink-0 !px-4">
           {busy ? <><Spinner /> Starting…</> : <>Scan my app</>}
         </button>
       </div>

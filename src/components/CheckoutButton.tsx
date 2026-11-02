@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Spinner } from "./ScanForm";
 
-export function CheckoutButton({ plan, scanId, children, className = "btn-signal", signedIn = true }: { plan: "repo" | "pro"; scanId?: string; children: React.ReactNode; className?: string; signedIn?: boolean }) {
+export function CheckoutButton({ plan, scanId, children, className = "btn-accent", signedIn = true }: { plan: "repo" | "pro"; scanId?: string; children: React.ReactNode; className?: string; signedIn?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   async function go() {

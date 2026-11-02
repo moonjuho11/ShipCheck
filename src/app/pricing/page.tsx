@@ -54,8 +54,8 @@ export default async function Pricing() {
             <div className="mt-10">
               {t.key === "free" && <Link href="/#scan" className="btn-ghost w-full">Start a free scan</Link>}
               {t.key === "repo" && (user
-                ? <Link href="/dashboard" className="btn-signal w-full">Pick a scanned repo to unlock</Link>
-                : <a href="/api/auth/github?next=/" className="btn-signal w-full">Scan first, then unlock</a>)}
+                ? <Link href="/dashboard" className="btn-accent w-full">Pick a scanned repo to unlock</Link>
+                : <a href="/api/auth/github?next=/" className="btn-accent w-full">Scan first, then unlock</a>)}
               {t.key === "pro" && (ent?.pro
                 ? <form action="/api/billing/portal" method="post"><button className="btn-ghost w-full">Manage subscription</button></form>
                 : <CheckoutButton plan="pro" signedIn={!!user} className="btn-white">Go Pro</CheckoutButton>)}

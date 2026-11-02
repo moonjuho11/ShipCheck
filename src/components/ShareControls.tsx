@@ -29,7 +29,7 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
           <p className="mt-1 text-[12.5px] leading-relaxed text-ink-3">Shows your score and which areas passed — never file names or fixes.</p>
         </div>
         <button type="button" role="switch" aria-checked={isPublic} onClick={toggle} disabled={busy}
-          className={`relative mt-0.5 inline-flex h-5 w-9 shrink-0 rounded-full transition ${isPublic ? "bg-signal" : "bg-white/15"}`}>
+          className={`relative mt-0.5 inline-flex h-5 w-9 shrink-0 rounded-full transition ${isPublic ? "bg-accent" : "bg-white/15"}`}>
           <span className="sr-only">Make report public</span>
           <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${isPublic ? "left-[18px]" : "left-0.5"}`} />
         </button>
@@ -57,7 +57,7 @@ function CopyRow({ value, label, copied, onCopy }: { value: string; label: strin
   return (
     <div className="flex items-center gap-1 rounded-lg border border-line bg-panel-2 py-1 pr-1 pl-2.5">
       <input readOnly value={value} aria-label={label} className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] text-ink-3 focus:outline-none" />
-      <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}>{copied ? "Copied" : "Copy"}</button>
+      <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-accent text-white" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}>{copied ? "Copied" : "Copy"}</button>
     </div>
   );
 }

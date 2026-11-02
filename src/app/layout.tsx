@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "A pre-launch safety audit for apps built with Lovable, Bolt, Cursor and Replit. Plain-English findings and copy-paste fix prompts for your AI agent.",
 };
 
-export const viewport: Viewport = { themeColor: "#08090a", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#000000", colorScheme: "dark" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
