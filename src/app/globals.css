@@ -1,41 +1,158 @@
 @import "tailwindcss";
 
+/*
+ * ShipCheck design system — dark, precise, calm.
+ * Canvas & hairlines after Linear, light streaks after Raycast,
+ * grid rails & mono labels after Firecrawl, serif accent after Exa.
+ */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  color-scheme: light;
+  --canvas: #08090a;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-ink: #0f172a;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --color-canvas: #08090a;
+  --color-panel: #0e0f11;
+  --color-panel-2: #141518;
+  --color-panel-3: #1b1c20;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-2: rgb(255 255 255 / 0.13);
+  --color-ink: #f7f8f8;
+  --color-ink-2: #c9ccd1;
+  --color-ink-3: #8a8f98;
+  --color-ink-4: #5b5f68;
+  --color-signal: #3ee88f;
+  --color-signal-2: #22c773;
+  --color-crit: #ff5c5c;
+  --color-high: #ff9a3d;
+  --color-med: #f2cf4a;
+  --color-low: #5eb0ff;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-instrument), Georgia, serif;
 }
 
+html { background: var(--canvas); overflow-x: clip; }
+body { overflow-x: clip; }
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--canvas);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
 }
+::selection { background: rgb(62 232 143 / 0.3); color: #fff; }
 
+/* ── Surfaces ─────────────────────────────────────────── */
 @utility card {
-  @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+  @apply rounded-2xl border border-line bg-panel;
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.4);
+}
+@utility window {
+  @apply overflow-hidden rounded-2xl border border-line-2 bg-panel;
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.06), 0 30px 80px -20px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(0 0 0 / 0.6);
 }
 
+/* ── Type ─────────────────────────────────────────────── */
+@utility display {
+  @apply font-medium tracking-[-0.035em] text-ink;
+  line-height: 1.02;
+}
+@utility headline {
+  @apply font-medium tracking-[-0.025em] text-ink;
+  line-height: 1.1;
+}
+@utility label-mono {
+  @apply font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink-3;
+}
+@utility text-sheen {
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #9ca0a8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility serif-accent {
+  font-family: var(--font-instrument), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* ── Controls ─────────────────────────────────────────── */
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium whitespace-nowrap transition duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-not-allowed disabled:opacity-50;
 }
-@utility btn-primary { @apply btn bg-slate-900 text-white hover:bg-slate-800 focus-visible:ring-slate-900; }
-@utility btn-brand { @apply btn bg-brand-600 text-white hover:bg-brand-700 focus-visible:ring-brand-600; }
-@utility btn-ghost { @apply btn border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-400; }
+@utility btn-white {
+  @apply btn bg-ink text-canvas hover:bg-white;
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.1), 0 6px 20px -6px rgb(255 255 255 / 0.25);
+}
+@utility btn-signal {
+  @apply btn bg-signal text-[#04150b] hover:bg-[#5cf0a3];
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 8px 30px -8px rgb(62 232 143 / 0.6);
+}
+@utility btn-ghost {
+  @apply btn border border-line-2 bg-white/[0.02] text-ink-2 hover:bg-white/[0.06] hover:text-ink;
+}
+@utility kbd {
+  @apply inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-line-2 bg-white/[0.04] px-1 font-mono text-[11px] text-ink-3;
+}
+@utility field {
+  @apply w-full rounded-xl border border-line bg-black/30 px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink-4 transition focus:border-signal/50 focus:bg-black/40 focus:outline-none focus:ring-4 focus:ring-signal/10;
+}
 
-@utility input {
-  @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10;
+/* ── Decorative ───────────────────────────────────────── */
+@utility bg-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+@utility fade-bottom {
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
+@utility fade-edges {
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
+}
+
+/* Raycast-style light streaks, re-tinted for ShipCheck. */
+.streak {
+  position: absolute;
+  width: 90px;
+  height: 150%;
+  top: -25%;
+  border-radius: 9999px;
+  transform: rotate(38deg);
+  filter: blur(12px);
+  background: linear-gradient(180deg, transparent 0%, rgb(62 232 143 / 0.05) 15%, rgb(62 232 143 / 0.7) 42%, rgb(34 199 115 / 0.45) 58%, rgb(94 176 255 / 0.22) 78%, transparent 100%);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { translate: -18px 0; opacity: 0.85; }
+  to { translate: 18px -12px; opacity: 1; }
+}
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+}
+
+/* Terminal lines that appear one by one. */
+.reveal-line {
+  opacity: 0;
+  animation: reveal 0.4s ease-out forwards;
+}
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.pulse-dot { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .streak, .pulse-dot { animation: none; }
+  .reveal-line { animation: none; opacity: 1; }
 }

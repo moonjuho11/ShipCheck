@@ -22,39 +22,42 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
   }
 
   return (
-    <div className="card p-5">
+    <div className="card p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-semibold text-slate-900">Share this report</h3>
-          <p className="mt-0.5 text-sm text-slate-500">The public page shows your score and which areas passed — never file names or fix instructions.</p>
+          <h3 className="text-[14px] font-medium text-ink">Public link</h3>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-ink-3">Shows your score and which areas passed — never file names or fixes.</p>
         </div>
         <button type="button" role="switch" aria-checked={isPublic} onClick={toggle} disabled={busy}
-          className={`relative mt-1 inline-flex h-6 w-11 shrink-0 rounded-full transition ${isPublic ? "bg-brand-600" : "bg-slate-300"}`}>
+          className={`relative mt-0.5 inline-flex h-5 w-9 shrink-0 rounded-full transition ${isPublic ? "bg-signal" : "bg-white/15"}`}>
           <span className="sr-only">Make report public</span>
-          <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${isPublic ? "left-[22px]" : "left-0.5"}`} />
+          <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${isPublic ? "left-[18px]" : "left-0.5"}`} />
         </button>
       </div>
       {isPublic && (
         <div className="mt-4 space-y-3">
-          <div className="flex gap-2">
-            <input readOnly value={link} className="input !py-2 font-mono !text-xs" aria-label="Public link" />
-            <button type="button" className="btn-ghost !py-2" onClick={() => copy(link, "link")}>{copied === "link" ? "Copied" : "Copy"}</button>
-          </div>
+          <CopyRow value={link} label="Public link" copied={copied === "link"} onCopy={() => copy(link, "link")} />
           {canBadge && productionReady ? (
-            <div>
-              <p className="text-sm font-medium text-slate-700">Badge for your README or website</p>
+            <div className="rounded-lg border border-line bg-black/30 p-3">
+              <p className="label-mono !text-[10px]">README badge</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={badgeUrl} alt="ShipCheck badge" className="mt-2 h-5" />
-              <div className="mt-2 flex gap-2">
-                <input readOnly value={markdown} className="input !py-2 font-mono !text-xs" aria-label="Badge markdown" />
-                <button type="button" className="btn-ghost !py-2" onClick={() => copy(markdown, "badge")}>{copied === "badge" ? "Copied" : "Copy"}</button>
-              </div>
+              <div className="mt-2"><CopyRow value={markdown} label="Badge markdown" copied={copied === "badge"} onCopy={() => copy(markdown, "badge")} /></div>
             </div>
           ) : (
-            <p className="text-xs text-slate-500">{canBadge ? "The “Production Ready” badge unlocks once your scan passes." : "Pro members get an embeddable “Production Ready” badge for passing apps."}</p>
+            <p className="text-[12px] text-ink-4">{canBadge ? "The Production Ready badge unlocks once your scan passes." : "Pro members get an embeddable Production Ready badge for passing apps."}</p>
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+function CopyRow({ value, label, copied, onCopy }: { value: string; label: string; copied: boolean; onCopy: () => void }) {
+  return (
+    <div className="flex items-center gap-1 rounded-lg border border-line bg-black/30 py-1 pr-1 pl-2.5">
+      <input readOnly value={value} aria-label={label} className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] text-ink-3 focus:outline-none" />
+      <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}>{copied ? "Copied" : "Copy"}</button>
     </div>
   );
 }

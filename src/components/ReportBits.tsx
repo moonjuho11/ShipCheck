@@ -1,29 +1,27 @@
 import type { Severity } from "@/scanner/types";
+import { SEV, SeverityIcon } from "./ui";
 
-export const SEV_STYLE: Record<Severity, { pill: string; dot: string; ring: string; text: string }> = {
-  critical: { pill: "bg-red-50 text-red-700 ring-red-600/20", dot: "bg-red-500", ring: "border-red-200", text: "text-red-700" },
-  high: { pill: "bg-orange-50 text-orange-700 ring-orange-600/20", dot: "bg-orange-500", ring: "border-orange-200", text: "text-orange-700" },
-  medium: { pill: "bg-amber-50 text-amber-800 ring-amber-600/20", dot: "bg-amber-400", ring: "border-amber-200", text: "text-amber-800" },
-  low: { pill: "bg-sky-50 text-sky-700 ring-sky-600/20", dot: "bg-sky-400", ring: "border-sky-200", text: "text-sky-700" },
-};
-
-export function SeverityPill({ severity }: { severity: Severity }) {
-  const s = SEV_STYLE[severity];
-  return <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ring-1 ring-inset ${s.pill}`}><span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />{severity}</span>;
+export function scoreColor(score: number) {
+  return score >= 80 ? "#3ee88f" : score >= 50 ? "#f2cf4a" : "#ff5c5c";
 }
 
-export function ScoreRing({ score, size = 132 }: { score: number; size?: number }) {
-  const r = 52, c = 2 * Math.PI * r;
-  const color = score >= 80 ? "#10b981" : score >= 50 ? "#f59e0b" : "#ef4444";
+/** Thin ring with a soft glow in the score's colour. */
+export function ScoreRing({ score, size = 148 }: { score: number; size?: number }) {
+  const r = 54, c = 2 * Math.PI * r, color = scoreColor(score);
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-        <circle cx="60" cy="60" r={r} fill="none" stroke="#e2e8f0" strokeWidth="10" />
-        <circle cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${(score / 100) * c} ${c}`} />
+      <div aria-hidden className="absolute inset-4 rounded-full blur-2xl" style={{ background: color, opacity: 0.18 }} />
+      <svg viewBox="0 0 120 120" className="relative h-full w-full -rotate-90 overflow-visible">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="rgb(255 255 255 / 0.07)" strokeWidth="4" />
+        {Array.from({ length: 60 }).map((_, i) => {
+          const a = (i / 60) * 2 * Math.PI;
+          return <line key={i} x1={60 + 46 * Math.cos(a)} y1={60 + 46 * Math.sin(a)} x2={60 + 48 * Math.cos(a)} y2={60 + 48 * Math.sin(a)} stroke="rgb(255 255 255 / 0.12)" strokeWidth="0.6" />;
+        })}
+        <circle cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${Math.max(0.5, (score / 100) * c)} ${c}`} style={{ filter: `drop-shadow(0 0 6px ${color})` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-bold tabular-nums text-slate-900">{score}</span>
-        <span className="text-xs font-medium text-slate-500">out of 100</span>
+        <span className="text-[44px] leading-none font-medium tracking-tighter text-ink tabular-nums">{score}</span>
+        <span className="mt-1 font-mono text-[10px] tracking-widest text-ink-4">/ 100</span>
       </div>
     </div>
   );
@@ -31,13 +29,13 @@ export function ScoreRing({ score, size = 132 }: { score: number; size?: number 
 
 export function ReadyBadge({ ready }: { ready: boolean }) {
   return ready ? (
-    <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1.5 text-sm font-semibold text-brand-700 ring-1 ring-inset ring-brand-600/20">
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor"><path d="M10 1.7 3.3 4.4v5.1c0 4.3 2.8 7.4 6.7 8.8 3.9-1.4 6.7-4.5 6.7-8.8V4.4L10 1.7Zm-1 11.6L5.8 10l1.1-1.1L9 11l4.2-4.2 1.1 1.1L9 13.3Z" /></svg>
+    <span className="inline-flex items-center gap-2 rounded-full bg-signal/10 px-3 py-1 text-[13px] font-medium text-signal ring-1 ring-signal/30 ring-inset">
+      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"><path d="M8 1.5 2.8 3.6v4c0 3.3 2.2 5.6 5.2 6.9 3-1.3 5.2-3.6 5.2-6.9v-4L8 1.5Z" /><path d="m5.6 8 1.7 1.7 3.2-3.4" strokeLinecap="round" /></svg>
       Production Ready
     </span>
   ) : (
-    <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3.5 py-1.5 text-sm font-semibold text-red-700 ring-1 ring-inset ring-red-600/20">
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor"><path d="M10 1.7a8.3 8.3 0 1 0 0 16.6 8.3 8.3 0 0 0 0-16.6Zm.9 12.5H9.1v-1.8h1.8v1.8Zm0-3.4H9.1V5.6h1.8v5.2Z" /></svg>
+    <span className="inline-flex items-center gap-2 rounded-full bg-crit/10 px-3 py-1 text-[13px] font-medium text-crit ring-1 ring-crit/30 ring-inset">
+      <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-crit" />
       Not ready to launch yet
     </span>
   );
@@ -45,11 +43,11 @@ export function ReadyBadge({ ready }: { ready: boolean }) {
 
 export function CountTiles({ counts }: { counts: Record<Severity, number> }) {
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-4 gap-px overflow-hidden rounded-xl border border-line bg-line">
       {(["critical", "high", "medium", "low"] as Severity[]).map((s) => (
-        <div key={s} className={`rounded-xl border bg-white px-3 py-2 text-center ${SEV_STYLE[s].ring}`}>
-          <div className={`text-2xl font-bold tabular-nums ${counts[s] ? SEV_STYLE[s].text : "text-slate-300"}`}>{counts[s]}</div>
-          <div className="text-xs font-medium capitalize text-slate-500">{s}</div>
+        <div key={s} className="bg-panel px-3 py-2.5">
+          <div className="flex items-center gap-1.5"><SeverityIcon severity={s} className="h-3 w-3" /><span className="text-[11px] text-ink-3">{SEV[s].label}</span></div>
+          <div className={`mt-1 text-2xl font-medium tracking-tight tabular-nums ${counts[s] ? "text-ink" : "text-ink-4"}`}>{counts[s]}</div>
         </div>
       ))}
     </div>

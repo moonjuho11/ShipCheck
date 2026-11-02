@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { ReportFinding } from "@/lib/report";
-import { SeverityPill } from "./ReportBits";
+import { CheckIcon, LockIcon, SeverityIcon, SeverityTag } from "./ui";
 
+/** Linear-style issue row that expands into the full explanation + fix prompt. */
 export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFinding; categoryLabel: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(!!defaultOpen);
   const [copied, setCopied] = useState(false);
@@ -19,48 +20,45 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
   }
 
   return (
-    <article className="card overflow-hidden">
+    <article className={`border-b border-line last:border-b-0 ${open ? "bg-white/[0.025]" : ""}`}>
       <button
-        type="button" onClick={() => !locked && setOpen(!open)} aria-expanded={open}
-        className={`flex w-full items-start gap-3 p-4 text-left sm:p-5 ${locked ? "cursor-default" : "hover:bg-slate-50/60"}`}
+        type="button" onClick={() => !locked && setOpen(!open)} aria-expanded={locked ? undefined : open} disabled={locked}
+        className={`flex w-full items-center gap-3 px-4 py-3 text-left transition sm:px-5 ${locked ? "cursor-default" : "hover:bg-white/[0.03]"}`}
       >
+        <SeverityIcon severity={f.severity} className="h-4 w-4 shrink-0" />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <SeverityPill severity={f.severity} />
-            <span className="text-xs font-medium text-slate-500">{categoryLabel}</span>
-            {f.aiWritten && <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 ring-1 ring-inset ring-violet-600/20">found by AI review</span>}
-          </div>
-          <h3 className="mt-2 text-[15px] font-semibold leading-snug text-slate-900 sm:text-base"><Rich text={f.title} /></h3>
-          {f.file && (
-            <p className="mt-1 truncate font-mono text-xs text-slate-500">
-              {f.file}{f.line ? `, line ${f.line}` : ""}{f.evidence ? ` · ${f.evidence}` : ""}
-            </p>
-          )}
+          <p className="text-[14px] leading-snug text-ink"><Rich text={f.title} /></p>
+          {f.file && <p className="mt-0.5 truncate font-mono text-[11.5px] text-ink-4">{f.file}{f.line ? `:${f.line}` : ""}{f.evidence ? `  ·  ${f.evidence}` : ""}</p>}
         </div>
+        {f.aiWritten && <span className="hidden rounded-md bg-[#8b6cff]/12 px-1.5 py-0.5 text-[10.5px] font-medium text-[#b9a6ff] ring-1 ring-[#8b6cff]/25 ring-inset sm:inline">AI review</span>}
+        <span className="hidden text-[12px] text-ink-4 md:inline">{categoryLabel}</span>
         {locked ? (
-          <span className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-slate-400"><LockIcon /> Locked</span>
+          <LockIcon className="h-3.5 w-3.5 shrink-0 text-ink-4" />
         ) : (
-          <svg viewBox="0 0 20 20" className={`mt-1 h-5 w-5 shrink-0 text-slate-400 transition ${open ? "rotate-180" : ""}`} fill="currentColor"><path d="M5.3 7.3 10 12l4.7-4.7 1.1 1.1L10 14.2 4.2 8.4z" /></svg>
+          <svg viewBox="0 0 16 16" className={`h-3.5 w-3.5 shrink-0 text-ink-4 transition ${open ? "rotate-90" : ""}`} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="m6 4 4 4-4 4" /></svg>
         )}
       </button>
       {open && !locked && (
-        <div className="space-y-4 border-t border-slate-100 bg-slate-50/50 p-4 sm:p-5">
-          <section>
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500">What’s wrong</h4>
-            <p className="mt-1 text-[15px] leading-relaxed text-slate-800"><Rich text={f.explanation!} /></p>
-          </section>
-          <section>
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Why it matters</h4>
-            <p className="mt-1 text-[15px] leading-relaxed text-slate-800"><Rich text={f.whyItMatters!} /></p>
-          </section>
-          <section>
-            <div className="flex items-center justify-between gap-2">
-              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Fix it: paste this into Lovable, Bolt, Cursor or Replit</h4>
-              <button type="button" onClick={copy} className="btn-primary !px-3 !py-1.5 !text-xs">
-                {copied ? "Copied ✓" : "Copy prompt"}
+        <div className="grid gap-5 px-4 pt-1 pb-5 sm:px-5 sm:pl-12 lg:grid-cols-[1fr_1.15fr]">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2"><SeverityTag severity={f.severity} /><span className="text-[12px] text-ink-4">{categoryLabel}</span></div>
+            <section>
+              <h4 className="label-mono !text-[10px]">What’s wrong</h4>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.explanation!} /></p>
+            </section>
+            <section>
+              <h4 className="label-mono !text-[10px]">Why it matters</h4>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.whyItMatters!} /></p>
+            </section>
+          </div>
+          <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-black/40">
+            <div className="flex items-center justify-between gap-2 border-b border-line px-3.5 py-2">
+              <h4 className="label-mono truncate !text-[10px]">Fix prompt <span className="hidden text-ink-4 sm:inline">· paste into your AI tool</span></h4>
+              <button type="button" onClick={copy} className={`flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2.5 whitespace-nowrap text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-ink text-canvas hover:bg-white"}`}>
+                {copied ? <><CheckIcon className="h-3 w-3" /> Copied</> : "Copy prompt"}
               </button>
             </div>
-            <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap rounded-xl border border-slate-200 bg-white p-4 font-mono text-[13px] leading-relaxed text-slate-700">{f.fixPrompt}</pre>
+            <pre className="max-h-80 overflow-auto p-3.5 font-mono text-[12px] leading-relaxed whitespace-pre-wrap text-ink-3">{f.fixPrompt}</pre>
           </section>
         </div>
       )}
@@ -68,14 +66,12 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
   );
 }
 
-export function LockIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
-  return <svg viewBox="0 0 20 20" className={className} fill="currentColor" aria-hidden="true"><path d="M10 1.7a4.2 4.2 0 0 0-4.2 4.2v2.5H5a1.7 1.7 0 0 0-1.7 1.6v6.7c0 .9.8 1.6 1.7 1.6h10c.9 0 1.7-.7 1.7-1.6V10c0-.9-.8-1.6-1.7-1.6h-.8V5.9A4.2 4.2 0 0 0 10 1.7Zm-2.5 4.2a2.5 2.5 0 0 1 5 0v2.5h-5V5.9Z" /></svg>;
-}
-
-/** Render `code` spans as small chips; everything else stays plain text (no HTML injection). */
+/** Render `code` spans as chips; everything else stays plain text (no HTML injection). */
 function Rich({ text }: { text: string }) {
   return <>{text.split(/(`[^`]+`)/g).map((part, i) =>
     part.startsWith("`") && part.endsWith("`") && part.length > 2
-      ? <code key={i} className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[0.85em] text-slate-800">{part.slice(1, -1)}</code>
+      ? <code key={i} className="rounded-[5px] border border-line bg-white/[0.05] px-1 py-px font-mono text-[0.86em] text-ink">{part.slice(1, -1)}</code>
       : part)}</>;
 }
+
+export { LockIcon };

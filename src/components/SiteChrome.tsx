@@ -1,33 +1,34 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
-import { Logo } from "./Logo";
+import { Wordmark } from "./Logo";
+import { GitHubIcon } from "./ui";
 
 export async function SiteHeader() {
   const user = await getCurrentUser().catch(() => null);
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight text-slate-900">
-          <Logo />
-          <span className="text-lg">ShipCheck</span>
-        </Link>
-        <nav className="flex items-center gap-1 text-sm sm:gap-2">
-          <Link href="/pricing" className="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900">Pricing</Link>
+    <header className="sticky top-0 z-40 px-3 pt-3">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-line bg-panel/70 pr-2 pl-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.05),0_10px_30px_-10px_rgb(0_0_0/0.8)] backdrop-blur-xl">
+        <Link href="/" aria-label="ShipCheck home"><Wordmark /></Link>
+        <nav className="flex items-center gap-1 text-sm">
+          <Link href="/#checks" className="hidden rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink md:block">What we check</Link>
+          <Link href="/#privacy" className="hidden rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink md:block">Privacy</Link>
+          <Link href="/pricing" className="rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink">Pricing</Link>
+          <span className="mx-2 hidden h-4 w-px bg-line-2 sm:block" />
           {user ? (
             <>
-              <Link href="/dashboard" className="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900">My scans</Link>
-              <form action="/api/auth/logout" method="post" className="flex items-center">
-                <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-slate-600 hover:bg-slate-100" title="Sign out">
+              <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-ink-2 transition hover:text-ink">My scans</Link>
+              <form action="/api/auth/logout" method="post">
+                <button className="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-ink-3 transition hover:bg-white/5 hover:text-ink" title="Sign out">
                   {user.avatar_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={user.avatar_url} alt="" className="h-7 w-7 rounded-full ring-1 ring-slate-200" />
+                    <img src={user.avatar_url} alt="" className="h-7 w-7 rounded-full ring-1 ring-line-2" />
                   ) : null}
-                  <span className="hidden font-medium sm:inline">Sign out</span>
+                  <span className="hidden sm:inline">Sign out</span>
                 </button>
               </form>
             </>
           ) : (
-            <a href="/api/auth/github?next=/dashboard" className="btn-primary !py-2">
+            <a href="/api/auth/github?next=/dashboard" className="btn-white !h-9 !px-3.5">
               <GitHubIcon /> Sign in
             </a>
           )}
@@ -39,23 +40,38 @@ export async function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex items-center gap-2"><Logo className="h-5 w-5" /> ShipCheck — launch with confidence.</div>
-        <div className="flex gap-5">
-          <Link href="/pricing" className="hover:text-slate-800">Pricing</Link>
-          <Link href="/#privacy" className="hover:text-slate-800">Privacy</Link>
-          <Link href="/#faq" className="hover:text-slate-800">FAQ</Link>
+    <footer className="relative mt-24 border-t border-line">
+      <div className="mx-auto grid max-w-6xl gap-10 border-x border-line px-6 py-12 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div>
+          <Wordmark />
+          <p className="mt-3 max-w-xs text-sm text-ink-3">The safety check for apps built with AI. Find the holes before your users do.</p>
+        </div>
+        <FooterCol title="Product" links={[["What we check", "/#checks"], ["How it works", "/#how"], ["Pricing", "/pricing"]]} />
+        <FooterCol title="Trust" links={[["Privacy", "/#privacy"], ["FAQ", "/#faq"]]} />
+        <FooterCol title="Account" links={[["My scans", "/dashboard"], ["Sign in", "/api/auth/github?next=/dashboard"]]} />
+      </div>
+      <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-t border-line px-6 py-4">
+        <span className="label-mono">© {new Date().getFullYear()} ShipCheck</span>
+        <span className="label-mono flex items-center gap-2"><span className="pulse-dot h-1.5 w-1.5 rounded-full bg-signal" /> All systems scanning</span>
+      </div>
+      <div aria-hidden className="pointer-events-none overflow-hidden">
+        <div className="mx-auto flex max-w-6xl items-end justify-center border-x border-line px-6 pt-6">
+          <span className="select-none bg-gradient-to-b from-white/[0.07] to-transparent bg-clip-text text-[19vw] leading-[0.8] font-semibold tracking-[-0.06em] text-transparent lg:text-[220px]">
+            ShipCheck
+          </span>
         </div>
       </div>
     </footer>
   );
 }
 
-export function GitHubIcon({ className = "h-4 w-4" }: { className?: string }) {
+function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
   return (
-    <svg viewBox="0 0 16 16" className={className} fill="currentColor" aria-hidden="true">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-    </svg>
+    <div>
+      <p className="label-mono">{title}</p>
+      <ul className="mt-3 space-y-2 text-sm">
+        {links.map(([l, h]) => <li key={l}><Link href={h} className="text-ink-3 transition hover:text-ink">{l}</Link></li>)}
+      </ul>
+    </div>
   );
 }

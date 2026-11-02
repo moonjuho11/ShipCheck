@@ -6,9 +6,13 @@ Paste a GitHub repo, and optionally your live site. ShipCheck clones the repo in
 
 ![Landing page](docs/screenshots/01-landing.png)
 
-| Live progress | Free report (titles only) | A finding with its fix prompt |
+| Live progress | Full report | A finding with its fix prompt |
 |---|---|---|
-| ![](docs/screenshots/02-progress.png) | ![](docs/screenshots/03-report-free.png) | ![](docs/screenshots/05-finding-expanded.png) |
+| ![](docs/screenshots/02-progress.png) | ![](docs/screenshots/04-report-full.png) | ![](docs/screenshots/05-finding-expanded.png) |
+
+| Free report (titles only) | Public share page | Pricing |
+|---|---|---|
+| ![](docs/screenshots/03-report-free.png) | ![](docs/screenshots/06-public-report.png) | ![](docs/screenshots/07-pricing.png) |
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the file structure, data model and safety design.
 

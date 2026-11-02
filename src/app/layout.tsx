@@ -1,19 +1,22 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist_Mono, Instrument_Serif, Inter } from "next/font/google";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const serif = Instrument_Serif({ variable: "--font-instrument", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
   title: { default: "ShipCheck — Is your vibe-coded app safe to launch?", template: "%s · ShipCheck" },
   description: "A pre-launch safety audit for apps built with Lovable, Bolt, Cursor and Replit. Plain-English findings and copy-paste fix prompts for your AI agent.",
 };
 
+export const viewport: Viewport = { themeColor: "#08090a", colorScheme: "dark" };
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} ${mono.variable} ${serif.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <SiteHeader />
         <main className="flex-1">{children}</main>

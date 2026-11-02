@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Step } from "@/scanner/types";
 import { Spinner } from "./ScanForm";
+import { CheckIcon } from "./ui";
 
-export function ScanProgress({ scanId, initialSteps, repo }: { scanId: string; initialSteps: Step[]; repo: string }) {
+export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId: string; initialSteps: Step[]; repo: string; startedAt: string }) {
   const router = useRouter();
   const [steps, setSteps] = useState(initialSteps);
   const [status, setStatus] = useState("queued");
+  const [now, setNow] = useState<number | null>(null); // set after mount to avoid a hydration mismatch
 
   useEffect(() => {
     let alive = true;
@@ -24,45 +26,60 @@ export function ScanProgress({ scanId, initialSteps, repo }: { scanId: string; i
           if (d.status === "completed" || d.status === "failed") { router.refresh(); return; }
         }
       } catch { /* keep polling */ }
-      if (alive) timer = setTimeout(tick, 1500);
+      if (alive) timer = setTimeout(tick, 1200);
     };
     tick();
-    return () => { alive = false; clearTimeout(timer); };
+    const clock = setInterval(() => setNow(Date.now()), 100);
+    return () => { alive = false; clearTimeout(timer); clearInterval(clock); };
   }, [scanId, router]);
 
   const done = steps.filter((s) => s.status === "done" || s.status === "skipped").length;
   const pct = Math.round((done / Math.max(1, steps.length)) * 100);
+  const elapsed = now === null ? 0 : Math.max(0, (now - new Date(startedAt).getTime()) / 1000);
 
   return (
-    <div className="card mx-auto max-w-2xl p-6 sm:p-8">
-      <div className="flex items-center gap-3">
-        <Spinner className="h-5 w-5 text-brand-600" />
-        <h1 className="text-xl font-semibold text-slate-900">{status === "queued" ? "Your scan is in line…" : "Checking your app…"}</h1>
+    <div className="relative mx-auto max-w-2xl">
+      <div aria-hidden className="absolute -inset-10 rounded-[48px] bg-signal/[0.07] blur-3xl" />
+      <div className="window relative">
+        <div className="h-px w-full bg-line">
+          <div className="h-px bg-signal shadow-[0_0_12px_rgb(62_232_143)] transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
+        </div>
+        <div className="flex items-center justify-between border-b border-line px-5 py-3">
+          <div className="flex items-center gap-2.5">
+            <Spinner className="h-4 w-4 text-signal" />
+            <span className="text-[14px] font-medium text-ink">{status === "queued" ? "Waiting for a free scanner…" : "Checking your app"}</span>
+          </div>
+          <span className="font-mono text-[12px] text-ink-3 tabular-nums">{elapsed.toFixed(1)}s</span>
+        </div>
+        <ol className="px-2 py-2">
+          {steps.map((s, i) => (
+            <li key={s.key} className={`flex items-start gap-3 rounded-lg px-3 py-2 ${s.status === "running" ? "bg-white/[0.04]" : ""}`}>
+              <span className="mt-0.5 w-5 font-mono text-[11px] text-ink-4">{String(i + 1).padStart(2, "0")}</span>
+              <StepIcon status={s.status} />
+              <div className="min-w-0 flex-1">
+                <p className={`text-[14px] ${s.status === "pending" ? "text-ink-4" : s.status === "skipped" ? "text-ink-4 line-through decoration-ink-4/60" : s.status === "running" ? "text-ink" : "text-ink-2"}`}>{s.label}</p>
+                {s.detail && <p className="mt-0.5 font-mono text-[11px] text-ink-4">{s.detail}</p>}
+              </div>
+              <span className={`mt-0.5 font-mono text-[10.5px] tracking-wide uppercase ${s.status === "done" ? "text-signal" : s.status === "running" ? "text-ink-2" : s.status === "failed" ? "text-high" : "text-ink-4"}`}>
+                {s.status === "running" ? "running" : s.status === "pending" ? "" : s.status}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <div className="flex items-center justify-between border-t border-line bg-black/25 px-5 py-2.5 font-mono text-[11px] text-ink-4">
+          <span className="truncate">{repo}</span>
+          <span>you can close this tab — we’ll keep going</span>
+        </div>
       </div>
-      <p className="mt-1 text-sm text-slate-500">Scanning <span className="font-mono">{repo}</span>. This usually takes under a minute. You can leave this page — we’ll keep going.</p>
-      <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
-        <div className="h-full rounded-full bg-brand-500 transition-all duration-700" style={{ width: `${Math.max(4, pct)}%` }} />
-      </div>
-      <ol className="mt-6 space-y-3">
-        {steps.map((s) => (
-          <li key={s.key} className="flex items-start gap-3">
-            <StepIcon status={s.status} />
-            <div className="min-w-0">
-              <p className={`text-[15px] ${s.status === "pending" ? "text-slate-400" : s.status === "skipped" ? "text-slate-400 line-through decoration-slate-300" : "text-slate-800"} ${s.status === "running" ? "font-semibold" : ""}`}>{s.label}</p>
-              {s.detail && <p className="text-xs text-slate-500">{s.detail}</p>}
-            </div>
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }
 
 function StepIcon({ status }: { status: Step["status"] }) {
-  const base = "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full";
-  if (status === "done") return <span className={`${base} bg-brand-500 text-white`}><svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor"><path d="M8.1 13.3 4.8 10l-1.1 1.1 4.4 4.4 9-9-1.1-1.1z" /></svg></span>;
-  if (status === "running") return <span className={`${base} text-brand-600`}><Spinner className="h-5 w-5" /></span>;
-  if (status === "failed") return <span className={`${base} bg-amber-400 text-white text-xs font-bold`}>!</span>;
-  if (status === "skipped") return <span className={`${base} border border-slate-200 text-slate-300 text-xs`}>–</span>;
-  return <span className={`${base} border-2 border-slate-200`} />;
+  const base = "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full";
+  if (status === "done") return <span className={`${base} bg-signal/15 text-signal`}><CheckIcon className="h-3 w-3" /></span>;
+  if (status === "running") return <span className={`${base} text-signal`}><Spinner className="h-[18px] w-[18px]" /></span>;
+  if (status === "failed") return <span className={`${base} bg-high/15 font-mono text-[10px] text-high`}>!</span>;
+  if (status === "skipped") return <span className={`${base} border border-line-2 text-[10px] text-ink-4`}>–</span>;
+  return <span className={`${base} border border-dashed border-line-2`} />;
 }

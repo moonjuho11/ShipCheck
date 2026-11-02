@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { scoreColor } from "@/components/ReportBits";
 import { ScanForm } from "@/components/ScanForm";
+import { ArrowRight, SeverityIcon } from "@/components/ui";
 import { env } from "@/lib/env";
 import { getEntitlements, PLANS } from "@/lib/plans";
 import { listScans } from "@/lib/scans";
@@ -14,64 +16,82 @@ export default async function Dashboard() {
   if (!user) redirect("/api/auth/github?next=/dashboard");
   const [scans, ent] = await Promise.all([listScans(user.id), getEntitlements(user.id)]);
   const privateAccess = /\brepo\b/.test(user.github_scopes);
+  const plan = ent.pro ? PLANS.pro.name : ent.unlocked.size ? `${PLANS.free.name} + ${ent.unlocked.size} Repo Pass${ent.unlocked.size > 1 ? "es" : ""}` : PLANS.free.name;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="mx-auto max-w-6xl px-5 py-12">
+      <div className="flex flex-wrap items-end justify-between gap-5">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Hi {user.name?.split(" ")[0] || user.github_login} 👋</h1>
-          <p className="mt-1 text-slate-600">
-            Plan: <strong>{ent.pro ? PLANS.pro.name : ent.unlocked.size ? `${PLANS.free.name} + ${ent.unlocked.size} Repo Pass${ent.unlocked.size > 1 ? "es" : ""}` : PLANS.free.name}</strong>
-            {ent.pro && ent.proUntil ? <span className="text-slate-500"> · renews {ent.proUntil.toLocaleDateString()}</span> : null}
+          <p className="label-mono">Dashboard</p>
+          <h1 className="headline mt-3 text-[30px] sm:text-[36px]">Hi {user.name?.split(" ")[0] || user.github_login}.</h1>
+          <p className="mt-2 flex items-center gap-2 text-sm text-ink-3">
+            <span className={`rounded-md px-1.5 py-0.5 font-mono text-[11px] ring-1 ring-inset ${ent.pro ? "bg-signal/10 text-signal ring-signal/30" : "bg-white/5 text-ink-2 ring-line-2"}`}>{plan}</span>
+            {ent.pro && ent.proUntil ? <span>renews {ent.proUntil.toLocaleDateString()}</span> : null}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {ent.pro ? (
-            <form action="/api/billing/portal" method="post"><button className="btn-ghost">Manage billing</button></form>
+            <form action="/api/billing/portal" method="post"><button className="btn-ghost !h-9">Manage billing</button></form>
           ) : (
-            <Link href="/pricing" className="btn-ghost">Upgrade</Link>
+            <Link href="/pricing" className="btn-ghost !h-9">Upgrade</Link>
           )}
-          {!privateAccess && <a className="btn-ghost" href="/api/auth/github?scope=repo&next=/dashboard">Connect private repos</a>}
-          {ent.pro && env.githubAppSlug && <a className="btn-primary" href={`https://github.com/apps/${env.githubAppSlug}/installations/new`}>Turn on PR checks</a>}
+          {!privateAccess && <a className="btn-ghost !h-9" href="/api/auth/github?scope=repo&next=/dashboard">Connect private repos</a>}
+          {ent.pro && env.githubAppSlug && <a className="btn-white !h-9" href={`https://github.com/apps/${env.githubAppSlug}/installations/new`}>Turn on PR checks</a>}
         </div>
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
-        <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Recent scans</h2>
+      <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_380px]">
+        <section className="window min-w-0 self-start">
+          <div className="flex items-center justify-between border-b border-line px-5 py-3">
+            <h2 className="text-[13px] font-medium text-ink">Recent scans</h2>
+            <span className="font-mono text-[11px] text-ink-4">{scans.length}</span>
+          </div>
           {scans.length === 0 ? (
-            <div className="card mt-3 p-8 text-center text-slate-600">No scans yet. Start your first one →</div>
+            <div className="px-6 py-16 text-center">
+              <div className="bg-dots mx-auto h-16 w-40 [mask-image:radial-gradient(black,transparent_70%)]" />
+              <p className="mt-2 text-ink-2">No scans yet</p>
+              <p className="mt-1 text-sm text-ink-4">Paste a repo on the right to run your first one.</p>
+            </div>
           ) : (
-            <ul className="card mt-3 divide-y divide-slate-100">
+            <ul>
               {scans.map((s) => (
-                <li key={s.id}>
-                  <Link href={`/scans/${s.id}`} className="flex items-center gap-4 px-4 py-3.5 hover:bg-slate-50 sm:px-5">
-                    <ScoreChip score={s.score} status={s.status} ready={s.production_ready} />
+                <li key={s.id} className="border-b border-line last:border-0">
+                  <Link href={`/scans/${s.id}`} className="group flex items-center gap-4 px-5 py-3.5 transition hover:bg-white/[0.03]">
+                    <ScoreChip score={s.score} status={s.status} />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium text-slate-900">{s.repo_full_name}</p>
-                      <p className="text-xs text-slate-500">
-                        {s.created_at.toLocaleString()} {s.trigger === "pr" ? `· Pull request #${s.pr_number}` : ""}
-                        {s.status === "completed" ? ` · ${s.counts.critical ?? 0} critical, ${s.counts.high ?? 0} high` : s.status === "failed" ? " · couldn't finish" : " · in progress"}
+                      <p className="truncate text-[14px] text-ink">{s.repo_full_name}</p>
+                      <p className="mt-0.5 truncate font-mono text-[11px] text-ink-4">
+                        {s.created_at.toLocaleString()}{s.trigger === "pr" ? ` · PR #${s.pr_number}` : ""}
                       </p>
                     </div>
-                    <span className="text-slate-300">›</span>
+                    {s.status === "completed" ? (
+                      <div className="hidden items-center gap-3 font-mono text-[11.5px] sm:flex">
+                        {(["critical", "high"] as const).map((k) => (
+                          <span key={k} className={`flex items-center gap-1.5 ${s.counts[k] ? "text-ink-2" : "text-ink-4"}`}><SeverityIcon severity={k} className="h-3 w-3" />{s.counts[k] ?? 0}</span>
+                        ))}
+                        {s.production_ready && <span className="rounded-md bg-signal/10 px-1.5 py-0.5 text-[10.5px] text-signal ring-1 ring-signal/25 ring-inset">READY</span>}
+                      </div>
+                    ) : (
+                      <span className={`font-mono text-[11px] uppercase ${s.status === "failed" ? "text-high" : "text-ink-3"}`}>{s.status === "failed" ? "failed" : "scanning…"}</span>
+                    )}
+                    <ArrowRight className="h-3.5 w-3.5 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-ink-2" />
                   </Link>
                 </li>
               ))}
             </ul>
           )}
         </section>
-        <aside>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">New scan</h2>
-          <div className="mt-3"><ScanForm signedIn hasPrivateAccess={privateAccess} compact /></div>
+        <aside className="space-y-3">
+          <p className="label-mono">New scan</p>
+          <ScanForm signedIn hasPrivateAccess={privateAccess} compact />
         </aside>
       </div>
     </div>
   );
 }
 
-function ScoreChip({ score, status, ready }: { score: number | null; status: string; ready: boolean | null }) {
-  if (status !== "completed") return <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-xs font-semibold text-slate-500">{status === "failed" ? "—" : "…"}</span>;
-  const c = ready ? "bg-brand-50 text-brand-700" : (score ?? 0) >= 50 ? "bg-amber-50 text-amber-700" : "bg-red-50 text-red-700";
-  return <span className={`flex h-11 w-11 items-center justify-center rounded-xl text-base font-bold tabular-nums ${c}`}>{score}</span>;
+function ScoreChip({ score, status }: { score: number | null; status: string }) {
+  if (status !== "completed") return <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] font-mono text-xs text-ink-4">{status === "failed" ? "—" : "··"}</span>;
+  const c = scoreColor(score ?? 0);
+  return <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border font-mono text-[14px] font-medium tabular-nums" style={{ color: c, borderColor: `${c}40`, background: `${c}14` }}>{score}</span>;
 }
