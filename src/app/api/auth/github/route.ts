@@ -6,6 +6,10 @@ import { safeNext } from "@/lib/session";
 
 // GET /api/auth/github?next=/dashboard[&scope=repo]
 export async function GET(req: NextRequest) {
+  if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+    // Not configured yet (fresh deploy): explain instead of failing with a 500.
+    return NextResponse.redirect(`${env.appUrl}/?error=${encodeURIComponent("Sign-in isn’t set up yet. Add the GitHub OAuth keys to finish setup.")}`);
+  }
   const next = safeNext(req.nextUrl.searchParams.get("next"));
   const wantPrivate = req.nextUrl.searchParams.get("scope") === "repo";
   const state = randomBytes(16).toString("hex");

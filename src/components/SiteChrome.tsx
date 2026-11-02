@@ -16,7 +16,7 @@ export async function SiteHeader() {
           <span className="mx-2 hidden h-4 w-px bg-line-2 sm:block" />
           {user ? (
             <>
-              <Link href="/dashboard" className="rounded-lg px-3 py-1.5 text-ink-2 transition hover:text-ink">My scans</Link>
+              <Link href="/dashboard" prefetch={false} className="rounded-lg px-3 py-1.5 text-ink-2 transition hover:text-ink">My scans</Link>
               <form action="/api/auth/logout" method="post">
                 <button className="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 text-ink-3 transition hover:bg-white/5 hover:text-ink" title="Sign out">
                   {user.avatar_url ? (
@@ -63,7 +63,13 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
     <div>
       <p className="eyebrow">{title}</p>
       <ul className="mt-3 space-y-2 text-sm">
-        {links.map(([l, h]) => <li key={l}><Link href={h} className="text-ink-3 transition hover:text-ink">{l}</Link></li>)}
+        {links.map(([l, h]) => (
+          <li key={l}>
+            {/* Server routes (sign-in) and signed-in pages are never prefetched. */}
+            {h.startsWith("/api/") ? <a href={h} className="text-ink-3 transition hover:text-ink">{l}</a>
+              : <Link href={h} prefetch={h === "/dashboard" ? false : undefined} className="text-ink-3 transition hover:text-ink">{l}</Link>}
+          </li>
+        ))}
       </ul>
     </div>
   );
