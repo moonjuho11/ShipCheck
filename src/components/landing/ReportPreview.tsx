@@ -1,3 +1,4 @@
+import { Stagger, StaggerItem } from "../motion";
 import { SeverityIcon, SeverityTag } from "../ui";
 import type { Severity } from "@/scanner/types";
 
@@ -44,18 +45,18 @@ export function ReportPreview() {
               <span className="text-[13px] font-medium text-ink-2">acme/taskpal</span>
               <span className="eyebrow">6 issues</span>
             </div>
-            <ul>
+            <Stagger as="ul" onMount delay={0.8} gap={0.07}>
               {ROWS.map((r, i) => (
-                <li key={i} className={`flex items-center gap-3 border-b border-line px-4 py-3 last:border-0 ${i === 1 ? "bg-white/[0.035]" : ""}`}>
+                <StaggerItem as="li" key={i} className={`flex items-center gap-3 border-b border-line px-4 py-3 last:border-0 ${i === 1 ? "bg-white/[0.035]" : ""}`}>
                   <SeverityIcon severity={r.sev} className="h-4 w-4 shrink-0" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13.5px] text-ink">{r.title}</p>
                     <p className="truncate font-mono text-[11px] text-ink-4">{r.file}</p>
                   </div>
                   <span className="hidden text-[11px] text-ink-4 sm:block">{r.area}</span>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
             <div className="border-t border-line bg-panel-2 p-4">
               <div className="flex items-center justify-between">
                 <SeverityTag severity="critical" />

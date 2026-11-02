@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { BracketLabel, CheckIcon, Section } from "@/components/ui";
 import { getEntitlements } from "@/lib/plans";
 import { getCurrentUser } from "@/lib/session";
@@ -35,16 +36,16 @@ export default async function Pricing() {
   return (
     <div>
       <div className="relative overflow-hidden">
-        <div className="relative mx-auto max-w-3xl px-5 pt-20 pb-14 text-center">
+        <Reveal onMount className="relative mx-auto max-w-3xl px-5 pt-20 pb-14 text-center">
           <BracketLabel className="justify-center">Pricing</BracketLabel>
           <h1 className="display mt-6 text-[40px] sm:text-[56px]">Start free. <span className="text-ink-4">Pay for the fixes.</span></h1>
           <p className="mx-auto mt-5 max-w-md text-ink-3">Every plan includes the full scan. Paid plans unlock where each problem lives and how to fix it.</p>
-        </div>
+        </Reveal>
       </div>
 
-      <Section className="grid gap-px bg-line lg:grid-cols-3">
+      <Section><Stagger onMount delay={0.15} gap={0.08} className="grid gap-px bg-line lg:grid-cols-3">
         {TIERS.map((t) => (
-          <div key={t.key} className={`relative flex flex-col bg-canvas p-7 sm:p-8 ${"highlight" in t ? "bg-panel" : ""}`}>
+          <StaggerItem key={t.key} className={`relative flex flex-col bg-canvas p-7 sm:p-8 ${"highlight" in t ? "bg-panel" : ""}`}>
             <p className="text-[15px] font-semibold text-ink">{t.name}</p>
             <p className="mt-1 text-sm text-ink-3">{t.tagline}</p>
             <p className="mt-6 flex items-baseline gap-2"><span className="text-5xl font-semibold tracking-tight text-ink">{t.price}</span><span className="text-sm text-ink-4">{t.cadence}</span></p>
@@ -60,13 +61,13 @@ export default async function Pricing() {
                 ? <form action="/api/billing/portal" method="post"><button className="btn-ghost w-full">Manage subscription</button></form>
                 : <CheckoutButton plan="pro" signedIn={!!user} className="btn-white">Go Pro</CheckoutButton>)}
             </div>
-          </div>
+          </StaggerItem>
         ))}
-      </Section>
+      </Stagger></Section>
 
       <Section className="px-5 py-16 sm:px-10">
         <BracketLabel>Compare</BracketLabel>
-        <div className="mt-6 overflow-x-auto">
+        <Reveal className="mt-6 overflow-x-auto">
           <table className="w-full min-w-[560px] text-left text-[14px]">
             <thead>
               <tr className="border-b border-line">
@@ -83,7 +84,7 @@ export default async function Pricing() {
               ))}
             </tbody>
           </table>
-        </div>
+        </Reveal>
         <p className="mt-10 text-[13px] text-ink-4">Payments are handled by Stripe. Prices in USD. Failed scans never count toward your plan.</p>
       </Section>
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { ScanForm } from "@/components/ScanForm";
 import { ArrowRight, SeverityIcon } from "@/components/ui";
 import { env } from "@/lib/env";
@@ -40,7 +41,7 @@ export default async function Dashboard() {
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_380px]">
-        <section className="window min-w-0 self-start">
+        <Reveal onMount y={10} className="window min-w-0 self-start">
           <div className="flex items-center justify-between border-b border-line px-5 py-3">
             <h2 className="text-[13px] font-medium text-ink">Recent scans</h2>
             <span className="text-[13px] text-ink-4 tabular-nums">{scans.length}</span>
@@ -51,9 +52,9 @@ export default async function Dashboard() {
               <p className="mt-1 text-sm text-ink-4">Paste a repo on the right to run your first one.</p>
             </div>
           ) : (
-            <ul>
+            <Stagger as="ul" onMount gap={0.04} delay={0.1}>
               {scans.map((s) => (
-                <li key={s.id} className="border-b border-line last:border-0">
+                <StaggerItem as="li" key={s.id} className="border-b border-line last:border-0">
                   <Link href={`/scans/${s.id}`} className="group flex items-center gap-4 px-5 py-3.5 transition hover:bg-white/[0.03]">
                     <ScoreChip score={s.score} status={s.status} />
                     <div className="min-w-0 flex-1">
@@ -74,11 +75,11 @@ export default async function Dashboard() {
                     )}
                     <ArrowRight className="h-3.5 w-3.5 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-ink-2" />
                   </Link>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
           )}
-        </section>
+        </Reveal>
         <aside className="space-y-3">
           <p className="eyebrow">New scan</p>
           <ScanForm signedIn hasPrivateAccess={privateAccess} compact />

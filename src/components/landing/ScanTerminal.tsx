@@ -1,3 +1,7 @@
+"use client";
+
+import { EASE, m } from "../motion";
+
 const LINES: [string, string, string][] = [
   ["00.0s", "clone", "temporary copy of acme/taskpal · 142 files"],
   ["00.9s", "secrets", "gitleaks + 14 detectors · history checked"],
@@ -13,23 +17,39 @@ const LINES: [string, string, string][] = [
 
 const TAG: Record<string, string> = { found: "text-ink", done: "text-ink" };
 
-/** Animated scan log (pure CSS — lines reveal with staggered delays). */
+/** Example scan log. Lines appear one by one the first time it scrolls into view. */
 export function ScanTerminal() {
   return (
-    <div className="window">
+    <m.div
+      className="window"
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+      transition={{ duration: 0.5, ease: EASE }}
+    >
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
         <span className="eyebrow">scan · acme/taskpal</span>
         <span className="text-[12px] text-ink-4">Example</span>
       </div>
-      <ol className="space-y-1.5 p-4 font-mono text-[12px] leading-relaxed">
+      <m.ol
+        className="space-y-1.5 p-4 font-mono text-[12px] leading-relaxed"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.32, delayChildren: 0.35 } } }}
+      >
         {LINES.map(([t, tag, msg], i) => (
-          <li key={i} className="reveal-line flex gap-3" style={{ animationDelay: `${0.35 + i * 0.45}s` }}>
+          <m.li
+            key={i}
+            className="flex gap-3"
+            variants={{ hidden: { opacity: 0, x: -6 }, show: { opacity: 1, x: 0, transition: { duration: 0.25, ease: EASE } } }}
+          >
             <span className="text-ink-4">{t}</span>
             <span className={`w-16 shrink-0 ${TAG[tag] ?? "text-ink-3"}`}>{tag}</span>
             <span className="min-w-0 text-ink-2">{msg}</span>
-          </li>
+          </m.li>
         ))}
-      </ol>
-    </div>
+      </m.ol>
+    </m.div>
   );
 }

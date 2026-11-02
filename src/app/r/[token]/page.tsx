@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Reveal } from "@/components/motion";
 import { AreaStatus, CountTiles, ReadyBadge, ScoreFigure } from "@/components/ReportBits";
 import { ArrowRight } from "@/components/ui";
 import { publicSummary } from "@/lib/report";
@@ -28,7 +29,7 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
         <p className="mt-2 text-center text-[13px] text-ink-4">
           Scanned {s.finishedAt?.toLocaleDateString()}{s.commitSha ? <> · Commit <span className="font-mono">{s.commitSha.slice(0, 7)}</span></> : null}
         </p>
-        <div className="window mt-10">
+        <Reveal onMount delay={0.1} y={12} className="window mt-10">
           <div className="p-6 sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div><p className="eyebrow">Safety score</p><div className="mt-1"><ScoreFigure score={s.score} /></div></div>
@@ -44,7 +45,7 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
               </li>
             ))}
           </ul>
-        </div>
+        </Reveal>
         <p className="mt-8 text-center text-sm text-ink-4">
           Details are visible only to the app’s owner. <Link href="/" className="inline-flex items-center gap-1 text-ink-2 hover:text-ink">Check your own app <ArrowRight className="h-3 w-3" /></Link>
         </p>

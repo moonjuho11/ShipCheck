@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Collapse, SwapText } from "./motion";
 
 export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBadge, productionReady }: { scanId: string; shareToken: string; initialPublic: boolean; appUrl: string; canBadge: boolean; productionReady: boolean }) {
   const [isPublic, setPublic] = useState(initialPublic);
@@ -34,8 +35,8 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
           <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${isPublic ? "left-[18px]" : "left-0.5"}`} />
         </button>
       </div>
-      {isPublic && (
-        <div className="mt-4 space-y-3">
+      <Collapse open={isPublic}>
+        <div className="space-y-3 pt-4">
           <CopyRow value={link} label="Public link" copied={copied === "link"} onCopy={() => copy(link, "link")} />
           {canBadge && productionReady ? (
             <div className="rounded-lg border border-line bg-panel-2 p-3">
@@ -48,7 +49,7 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
             <p className="text-[12px] text-ink-4">{canBadge ? "The Production Ready badge unlocks once your scan passes." : "Pro members get an embeddable Production Ready badge for passing apps."}</p>
           )}
         </div>
-      )}
+      </Collapse>
     </div>
   );
 }
@@ -57,7 +58,7 @@ function CopyRow({ value, label, copied, onCopy }: { value: string; label: strin
   return (
     <div className="flex items-center gap-1 rounded-lg border border-line bg-panel-2 py-1 pr-1 pl-2.5">
       <input readOnly value={value} aria-label={label} className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] text-ink-3 focus:outline-none" />
-      <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-accent text-white" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}>{copied ? "Copied" : "Copy"}</button>
+      <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-accent text-white" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}><SwapText active={copied} idle="Copy" done="Copied" /></button>
     </div>
   );
 }

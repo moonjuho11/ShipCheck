@@ -69,7 +69,7 @@ body {
 
 /* ── Controls ─────────────────────────────────────────── */
 @utility btn {
-  @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition duration-150 select-none active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink/70 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-not-allowed disabled:opacity-50;
 }
 @utility btn-white {
   @apply btn bg-ink text-canvas hover:bg-white;
@@ -105,16 +105,14 @@ body {
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
 }
 
-/* Terminal lines that appear one by one. */
-.reveal-line {
-  opacity: 0;
-  animation: reveal 0.4s ease-out forwards;
-}
-@keyframes reveal {
-  from { opacity: 0; transform: translateY(4px); }
+/* On-mount entrance (hero, report summary…): pure CSS so it never waits for JS. */
+@keyframes enter {
+  from { opacity: 0; transform: translateY(var(--y, 12px)); }
   to { opacity: 1; transform: none; }
 }
+.enter { animation: enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--d, 0s); }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal-line { animation: none; opacity: 1; }
+  .enter { animation: none; }
+  .btn, [class*="btn-"] { transition: none; }
 }

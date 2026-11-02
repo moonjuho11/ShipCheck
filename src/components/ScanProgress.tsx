@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Step } from "@/scanner/types";
 import { Spinner } from "./ScanForm";
+import { AnimatePresence, EASE, m } from "./motion";
 import { CheckIcon } from "./ui";
 
 export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId: string; initialSteps: Step[]; repo: string; startedAt: string }) {
@@ -41,7 +42,7 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
     <div className="relative mx-auto max-w-2xl">
       <div className="window relative">
         <div className="h-px w-full bg-line">
-          <div className="h-px bg-accent transition-all duration-700" style={{ width: `${Math.max(3, pct)}%` }} />
+          <m.div className="h-px bg-accent" initial={false} animate={{ width: `${Math.max(3, pct)}%` }} transition={{ duration: 0.8, ease: EASE }} />
         </div>
         <div className="flex items-center justify-between border-b border-line px-5 py-3">
           <div className="flex items-center gap-2.5">
@@ -52,8 +53,8 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
         </div>
         <ol className="px-2 py-2">
           {steps.map((s) => (
-            <li key={s.key} className={`flex items-start gap-3 rounded-lg px-3 py-2 ${s.status === "running" ? "bg-white/[0.04]" : ""}`}>
-              <StepIcon status={s.status} />
+            <li key={s.key} className={`flex items-start gap-3 rounded-lg px-3 py-2 transition-colors duration-300 ${s.status === "running" ? "bg-white/[0.04]" : ""}`}>
+              <AnimatePresence mode="wait" initial={false}><m.span key={s.status} className="inline-flex shrink-0" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { duration: 0.25, ease: EASE } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}><StepIcon status={s.status} /></m.span></AnimatePresence>
               <div className="min-w-0 flex-1">
                 <p className={`text-[14px] ${s.status === "pending" ? "text-ink-4" : s.status === "skipped" ? "text-ink-4 line-through decoration-ink-4/60" : s.status === "running" ? "text-ink" : "text-ink-2"}`}>{s.label}</p>
                 {s.detail && <p className="mt-0.5 text-[12px] text-ink-4">{s.detail}</p>}

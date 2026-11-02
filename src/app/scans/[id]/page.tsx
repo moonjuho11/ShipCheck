@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { Reveal } from "@/components/motion";
 import { FindingCard } from "@/components/FindingCard";
 import { AreaStatus, CountTiles, ReadyBadge, ScoreFigure } from "@/components/ReportBits";
 import { RescanButton } from "@/components/RescanButton";
@@ -82,7 +83,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="min-w-0 space-y-6">
-          <section className="window p-6 sm:p-7">
+          <Reveal onMount y={10}><section className="window p-6 sm:p-7">
             <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:gap-10">
               <div>
                 <p className="eyebrow">Safety score</p>
@@ -94,10 +95,10 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
               </div>
             </div>
             <div className="mt-6"><CountTiles counts={counts} /></div>
-          </section>
+          </section></Reveal>
 
           {access === "titles" && report.findings.length > 0 && (
-            <section className="rounded-xl border border-line-2 bg-panel p-6">
+            <Reveal onMount delay={0.08} y={10}><section className="rounded-xl border border-line-2 bg-panel p-6">
               <div className="relative">
                 <div>
                   <h2 className="text-[16px] font-semibold text-ink">Unlock the fixes</h2>
@@ -108,7 +109,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
                 <CheckoutButton plan="repo" scanId={scan.id}>Unlock this repo · $29 once</CheckoutButton>
                 <CheckoutButton plan="pro" scanId={scan.id} className="btn-white">Go Pro · $49/month</CheckoutButton>
               </div>
-            </section>
+            </section></Reveal>
           )}
 
           {report.findings.length === 0 ? (
@@ -117,7 +118,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
               <p className="mt-1 text-ink-3">We didn’t find any of the problems we check for.</p>
             </section>
           ) : (
-            <section className="window">
+            <Reveal onMount delay={0.14} y={10}><section className="window">
               {(["critical", "high", "medium", "low"] as Severity[]).map((sev) =>
                 report.bySeverity[sev].length ? (
                   <div key={sev} aria-labelledby={`sev-${sev}`}>
@@ -133,11 +134,11 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
                   </div>
                 ) : null,
               )}
-            </section>
+            </section></Reveal>
           )}
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+        <Reveal onMount delay={0.1} y={10} className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <ShareControls scanId={scan.id} shareToken={scan.share_token} initialPublic={scan.is_public} appUrl={env.appUrl} canBadge={ent.pro} productionReady={ready} />
           <div className="card p-4">
             <h3 className="eyebrow">Checked areas</h3>
@@ -162,7 +163,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
               {notes.map((n) => <li key={n}>{n}</li>)}
             </ul>
           </details>
-        </aside>
+        </Reveal>
       </div>
     </div>
   );
