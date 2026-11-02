@@ -56,7 +56,7 @@ export function ReportPreview() {
                 </li>
               ))}
             </ul>
-            <div className="border-t border-line bg-black/25 p-4">
+            <div className="border-t border-line bg-panel-2 p-4">
               <div className="flex items-center justify-between">
                 <SeverityTag severity="critical" />
                 <span className="flex items-center gap-1.5 rounded-md border border-line-2 px-2 py-1 text-[11px] text-ink-2">Copy fix prompt</span>

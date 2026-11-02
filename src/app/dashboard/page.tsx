@@ -47,7 +47,6 @@ export default async function Dashboard() {
           </div>
           {scans.length === 0 ? (
             <div className="px-6 py-16 text-center">
-              <div className="bg-dots mx-auto h-16 w-40 [mask-image:radial-gradient(black,transparent_70%)]" />
               <p className="mt-2 text-ink-2">No scans yet</p>
               <p className="mt-1 text-sm text-ink-4">Paste a repo on the right to run your first one.</p>
             </div>

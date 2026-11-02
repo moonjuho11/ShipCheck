@@ -38,7 +38,7 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
         <div className="mt-4 space-y-3">
           <CopyRow value={link} label="Public link" copied={copied === "link"} onCopy={() => copy(link, "link")} />
           {canBadge && productionReady ? (
-            <div className="rounded-lg border border-line bg-black/30 p-3">
+            <div className="rounded-lg border border-line bg-panel-2 p-3">
               <p className="eyebrow">README badge</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={badgeUrl} alt="ShipCheck badge" className="mt-2 h-5" />
@@ -55,7 +55,7 @@ export function ShareControls({ scanId, shareToken, initialPublic, appUrl, canBa
 
 function CopyRow({ value, label, copied, onCopy }: { value: string; label: string; copied: boolean; onCopy: () => void }) {
   return (
-    <div className="flex items-center gap-1 rounded-lg border border-line bg-black/30 py-1 pr-1 pl-2.5">
+    <div className="flex items-center gap-1 rounded-lg border border-line bg-panel-2 py-1 pr-1 pl-2.5">
       <input readOnly value={value} aria-label={label} className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] text-ink-3 focus:outline-none" />
       <button type="button" onClick={onCopy} className={`h-7 shrink-0 rounded-md px-2.5 text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-white/[0.07] text-ink-2 hover:bg-white/[0.12]"}`}>{copied ? "Copied" : "Copy"}</button>
     </div>

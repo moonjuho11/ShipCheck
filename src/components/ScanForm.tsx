@@ -84,7 +84,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
           {problem.action && <a href={problem.action.href} className="font-medium text-ink underline decoration-ink-4 underline-offset-4 hover:decoration-ink">{problem.action.label} →</a>}
         </div>
       )}
-      <div className="flex items-center justify-between gap-3 border-t border-line bg-black/20 px-3 py-2.5">
+      <div className="flex items-center justify-between gap-3 border-t border-line bg-panel-2 px-3 py-2.5">
         <div className="hidden min-w-0 items-center gap-1.5 overflow-hidden md:flex">
           {CHECKS.slice(0, compact ? 3 : 5).map((c) => (
             <span key={c} className="flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] whitespace-nowrap text-ink-3">

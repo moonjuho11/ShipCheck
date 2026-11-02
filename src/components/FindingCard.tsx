@@ -51,7 +51,7 @@ export function FindingCard({ f, categoryLabel, defaultOpen }: { f: ReportFindin
               <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2"><Rich text={f.whyItMatters!} /></p>
             </section>
           </div>
-          <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-black/40">
+          <section className="min-w-0 overflow-hidden rounded-xl border border-line bg-panel-2">
             <div className="flex items-center justify-between gap-2 border-b border-line px-3.5 py-2">
               <h4 className="eyebrow truncate">Fix prompt <span className="hidden text-ink-4 sm:inline">· paste into your AI tool</span></h4>
               <button type="button" onClick={copy} className={`flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2.5 whitespace-nowrap text-[12px] font-medium transition ${copied ? "bg-signal text-[#04150b]" : "bg-ink text-canvas hover:bg-white"}`}>

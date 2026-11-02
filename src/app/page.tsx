@@ -34,11 +34,10 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const error = str(sp.error);
 
   return (
-    <div className="-mt-[68px]">
+    <div>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-[68px]">
-        <div aria-hidden className="bg-grid fade-edges pointer-events-none absolute inset-0 opacity-60" />
-        <div className="relative mx-auto max-w-4xl px-5 pt-24 pb-16 text-center sm:pt-32">
+      <section className="relative">
+        <div className="relative mx-auto max-w-4xl px-5 pt-20 pb-16 text-center sm:pt-28">
           <p className="eyebrow">Pre-launch security audit for AI-built apps</p>
           <h1 className="display mt-6 text-[40px] text-balance sm:text-[56px] lg:text-[64px]">Is your vibe-coded app<br className="hidden sm:block" /> safe to launch?</h1>
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-balance text-ink-3 sm:text-lg">
@@ -111,7 +110,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               <span className="font-mono text-[11px] text-ink-4">{String(i + 1).padStart(2, "0")}</span>
               <h3 className="mt-6 text-[17px] font-medium text-ink">{c.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-3">{c.body}</p>
-              <div className="mt-6 flex items-center gap-2 rounded-lg border border-line bg-black/30 px-3 py-2 text-[12.5px] text-ink-2">
+              <div className="mt-6 flex items-center gap-2 rounded-lg border border-line bg-panel-2 px-3 py-2 text-[12.5px] text-ink-2">
                 <SeverityTag severity={c.sev} />
                 <span className="min-w-0 truncate">{c.example}</span>
               </div>
@@ -159,7 +158,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </div>
           <div className="space-y-4 p-5 text-[14px]">
             <div><p className="eyebrow">Why it matters</p><p className="mt-1.5 leading-relaxed text-ink-2">A user can change /invoices/123 to /invoices/124 and read someone else’s private data. It’s one of the most common real-world leaks.</p></div>
-            <div className="rounded-xl border border-line bg-black/40">
+            <div className="rounded-xl border border-line bg-panel-2">
               <div className="flex items-center justify-between border-b border-line px-3.5 py-2">
                 <span className="eyebrow">Fix prompt</span>
                 <span className="rounded-md bg-ink px-2 py-1 text-[12px] font-medium text-canvas">Copy prompt</span>
@@ -217,7 +216,7 @@ Please:
           </div>
           <Link href="/pricing" className="btn-ghost self-start sm:self-auto">Compare plans <ArrowRight /></Link>
         </div>
-        <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+        <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
           {[
             ["Free", "$0", "1 scan a month · see every problem’s title"],
             ["Repo Pass", "$29", "Full report + fix prompts for one repo · 5 rescans"],

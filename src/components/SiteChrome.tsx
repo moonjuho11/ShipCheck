@@ -6,8 +6,8 @@ import { GitHubIcon } from "./ui";
 export async function SiteHeader() {
   const user = await getCurrentUser().catch(() => null);
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-line bg-panel/70 pr-2 pl-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.05),0_10px_30px_-10px_rgb(0_0_0/0.8)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-line bg-canvas">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
         <Link href="/" aria-label="ShipCheck home"><Wordmark /></Link>
         <nav className="flex items-center gap-1 text-sm">
           <Link href="/#checks" className="hidden rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink md:block">What we check</Link>
@@ -28,7 +28,7 @@ export async function SiteHeader() {
               </form>
             </>
           ) : (
-            <a href="/api/auth/github?next=/dashboard" className="btn-white !h-9 !px-3.5">
+            <a href="/api/auth/github?next=/dashboard" className="btn-white !h-8 !px-3">
               <GitHubIcon /> Sign in
             </a>
           )}

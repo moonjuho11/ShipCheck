@@ -6,17 +6,20 @@
  * severity colours mean severity. No decorative glows or gradients.
  */
 :root {
-  --canvas: #08090a;
+  --canvas: #161819;
   color-scheme: dark;
 }
 
 @theme inline {
-  --color-canvas: #08090a;
-  --color-panel: #0e0f11;
-  --color-panel-2: #141518;
-  --color-panel-3: #1b1c20;
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-line-2: rgb(255 255 255 / 0.13);
+  /* Surfaces sampled from Linear: cards sit almost flush with the page and are
+     separated by hairlines, not by contrast or shadow. Nested boxes go slightly
+     lighter, never darker. */
+  --color-canvas: #161819;
+  --color-panel: #1b1c1e;
+  --color-panel-2: #222426;
+  --color-panel-3: #2a2c2e;
+  --color-line: #26282a;
+  --color-line-2: #303235;
   --color-ink: #f7f8f8;
   --color-ink-2: #c9ccd1;
   --color-ink-3: #8a8f98;
@@ -44,12 +47,10 @@ body {
 
 /* ── Surfaces ─────────────────────────────────────────── */
 @utility card {
-  @apply rounded-2xl border border-line bg-panel;
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.4);
+  @apply rounded-xl border border-line bg-panel;
 }
 @utility window {
-  @apply overflow-hidden rounded-2xl border border-line-2 bg-panel;
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.04), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+  @apply overflow-hidden rounded-xl border border-line bg-panel;
 }
 
 /* ── Type ─────────────────────────────────────────────── */
@@ -76,13 +77,13 @@ body {
   @apply btn bg-signal text-[#04150b] hover:bg-[#4ddb8f];
 }
 @utility btn-ghost {
-  @apply btn border border-line-2 bg-white/[0.02] text-ink-2 hover:bg-white/[0.06] hover:text-ink;
+  @apply btn border border-line-2 bg-panel text-ink-2 hover:bg-panel-2 hover:text-ink;
 }
 @utility kbd {
-  @apply inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-line-2 bg-white/[0.04] px-1 font-mono text-[11px] text-ink-3;
+  @apply inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] border border-line-2 bg-panel-2 px-1 font-mono text-[11px] text-ink-3;
 }
 @utility field {
-  @apply w-full rounded-xl border border-line bg-black/30 px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink-4 transition focus:border-signal/50 focus:bg-black/40 focus:outline-none focus:ring-4 focus:ring-signal/10;
+  @apply w-full rounded-lg border border-line bg-panel-2 px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink-4 transition focus:border-line-2 focus:outline-none;
 }
 
 /* ── Decorative ───────────────────────────────────────── */

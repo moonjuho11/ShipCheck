@@ -35,7 +35,6 @@ export default async function Pricing() {
   return (
     <div>
       <div className="relative overflow-hidden">
-        <div aria-hidden className="bg-grid fade-edges absolute inset-0" />
         <div className="relative mx-auto max-w-3xl px-5 pt-20 pb-14 text-center">
           <BracketLabel className="justify-center">Pricing</BracketLabel>
           <h1 className="display mt-6 text-[40px] sm:text-[56px]">Start free. <span className="text-ink-4">Pay for the fixes.</span></h1>

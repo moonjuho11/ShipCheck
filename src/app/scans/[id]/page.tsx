@@ -137,7 +137,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
           )}
         </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-[88px] lg:self-start">
+        <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <ShareControls scanId={scan.id} shareToken={scan.share_token} initialPublic={scan.is_public} appUrl={env.appUrl} canBadge={ent.pro} productionReady={ready} />
           <div className="card p-4">
             <h3 className="eyebrow">Checked areas</h3>
