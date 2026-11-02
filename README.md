@@ -217,5 +217,9 @@ Those two dev switches are ignored when `NODE_ENV=production`.
 
 ## Brand assets
 
-The ShipCheck mark lives in [`docs/brand/`](docs/brand): `logo-white.svg` / `logo-black.svg` (transparent), `app-icon.svg` (on the dark background), and 512px PNGs of each for places that need an upload. In code it's `src/components/Logo.tsx`, and the browser tab icon is `src/app/icon.svg`.
+The ShipCheck mark lives in [`docs/brand/`](docs/brand): `logo-white.svg` / `logo-black.svg` (transparent), `app-icon.svg` (on the dark background), and 512px PNGs of each for places that need an upload. In code it's `src/components/Logo.tsx`; the browser tab icon (`src/app/icon.svg`) and the SVGs in `docs/brand/` are generated from it:
+
+```bash
+npx tsx scripts/export-brand.ts
+```
 
