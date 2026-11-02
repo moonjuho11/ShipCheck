@@ -139,6 +139,18 @@ npm run worker
 
 Open http://localhost:3000.
 
+### Deploying on Railway (what's running now)
+
+The production setup is one Railway project, **ShipCheck**, with three services:
+
+| Service | Source | Notes |
+|---|---|---|
+| `Postgres` | Railway Postgres template | `DATABASE_URL` is referenced by the other two services |
+| `web` | this repo, `main`, Railpack (Next.js) | Pre-deploy command `node scripts/migrate.mjs` applies migrations; healthcheck `/pricing`; public domain |
+| `worker` | this repo, `main`, `Dockerfile.worker` | Gitleaks + Semgrep baked in; shares `ENCRYPTION_KEY` / `SESSION_SECRET` / `APP_URL` with `web` via `${{web.*}}` references |
+
+Pushing to `main` redeploys both app services. Add the GitHub OAuth, GitHub App, Stripe and Anthropic variables to `web` (and the GitHub App + Anthropic ones to `worker`) as you set those up.
+
 ### Deploying
 
 - **Web:** any Next.js host (Vercel, Render, Fly…). It needs no binaries.
