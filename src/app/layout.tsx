@@ -8,7 +8,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "ShipCheck — Is your vibe-coded app safe to launch?", template: "%s · ShipCheck" },
+  title: { default: "Seaproof — Is your vibe-coded app safe to launch?", template: "%s · Seaproof" },
   description: "A pre-launch safety audit for apps built with Lovable, Bolt, Cursor and Replit. Plain-English findings and copy-paste fix prompts for your AI agent.",
 };
 

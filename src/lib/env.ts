@@ -23,7 +23,7 @@ export const env = {
   get anthropicApiKey() { return process.env.ANTHROPIC_API_KEY || ""; },
   get isProd() { return process.env.NODE_ENV === "production"; },
   /** Dev-only escape hatch so you can scan a local git repo (file:///…). Ignored in production. */
-  get allowLocalRepos() { return process.env.NODE_ENV !== "production" && process.env.SHIPCHECK_ALLOW_LOCAL_REPOS === "1"; },
+  get allowLocalRepos() { return process.env.NODE_ENV !== "production" && process.env.SEAPROOF_ALLOW_LOCAL_REPOS === "1"; },
   /** Dev/test-only: let live-site checks hit localhost. Ignored in production. */
-  get allowPrivateTargets() { return process.env.NODE_ENV !== "production" && process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS === "1"; },
+  get allowPrivateTargets() { return process.env.NODE_ENV !== "production" && process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS === "1"; },
 };

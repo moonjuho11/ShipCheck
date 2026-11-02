@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-// ShipCheck should pass its own live-site checks.
+// Seaproof should pass its own live-site checks.
 const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   { key: "X-Content-Type-Options", value: "nosniff" },

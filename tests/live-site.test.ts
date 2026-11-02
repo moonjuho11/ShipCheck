@@ -52,7 +52,7 @@ const servers: http.Server[] = [];
 let badUrl = "", goodUrl = "";
 
 beforeAll(async () => {
-  process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS = "1";
+  process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS = "1";
   for (const [make, set] of [[insecureServer, (u: string) => (badUrl = u)], [secureSpaServer, (u: string) => (goodUrl = u)]] as const) {
     const s = make();
     await new Promise<void>((r) => s.listen(0, "127.0.0.1", () => r()));
@@ -61,7 +61,7 @@ beforeAll(async () => {
   }
 });
 afterAll(() => {
-  delete process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS;
+  delete process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS;
   servers.forEach((s) => s.close());
 });
 
@@ -97,14 +97,14 @@ describe("SSRF protection", () => {
   });
 
   it("refuses internal targets and non-http schemes", async () => {
-    const prev = process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS;
-    delete process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS;
+    const prev = process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS;
+    delete process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS;
     try {
       for (const u of ["http://127.0.0.1/", "http://169.254.169.254/latest/meta-data/", "http://localhost:3000", "file:///etc/passwd", "http://user:pass@example.com", "http://[::1]/", "http://metadata.google.internal/"]) {
         await expect(assertPublicUrl(u), u).rejects.toBeInstanceOf(BlockedTargetError);
       }
     } finally {
-      if (prev) process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS = prev;
+      if (prev) process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS = prev;
     }
   });
 });

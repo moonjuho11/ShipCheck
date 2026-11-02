@@ -1,6 +1,6 @@
-# ShipCheck architecture
+# Seaproof architecture
 
-ShipCheck is a pre-launch safety audit for apps built with AI coding tools
+Seaproof is a pre-launch safety audit for apps built with AI coding tools
 (Lovable, Bolt, Cursor, Replit, v0, …). A user pastes a GitHub repo URL (and
 optionally their live site URL); a background worker clones the repo into a
 throwaway sandbox, runs deterministic scanners plus an LLM review, stores
@@ -23,7 +23,7 @@ throwaway sandbox, runs deterministic scanners plus an LLM review, stores
 ## File structure
 
 ```
-shipcheck/
+seaproof/
 ├── docs/ARCHITECTURE.md            ← this file
 ├── supabase/migrations/            ← SQL schema (works on Supabase or any Postgres 14+)
 │   └── 0001_init.sql
@@ -70,7 +70,7 @@ shipcheck/
 
 All tables have Row Level Security **enabled with no policies**: the app only
 talks to Postgres from the server (via `DATABASE_URL`), so Supabase's public
-`anon` key can read nothing. (ShipCheck would flag itself otherwise.)
+`anon` key can read nothing. (Seaproof would flag itself otherwise.)
 
 | Table | Purpose | Key columns |
 |---|---|---|

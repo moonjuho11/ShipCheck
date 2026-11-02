@@ -28,7 +28,7 @@ export function isPrivateIp(ip: string): boolean {
 }
 
 function allowPrivate() {
-  return process.env.NODE_ENV !== "production" && process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS === "1";
+  return process.env.NODE_ENV !== "production" && process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS === "1";
 }
 
 export async function assertPublicUrl(raw: string): Promise<URL> {
@@ -60,7 +60,7 @@ export interface SafeFetchOptions {
   timeoutMs?: number;
 }
 
-const UA = "ShipCheckBot/1.0 (+security audit requested by the site owner)";
+const UA = "SeaproofBot/1.0 (+security audit requested by the site owner)";
 
 /**
  * Fetch a user-supplied URL safely: http(s) only, public IPs only (checked on every

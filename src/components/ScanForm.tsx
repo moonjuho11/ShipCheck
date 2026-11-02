@@ -43,7 +43,7 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
       else if (data.code === "upgrade_required") setProblem({ message: data.error, action: { label: "See plans", href: "/pricing" } });
       else setProblem({ message: data.error || "Something went wrong. Please try again." });
     } catch {
-      setProblem({ message: "We couldn't reach ShipCheck. Check your connection and try again." });
+      setProblem({ message: "We couldn't reach Seaproof. Check your connection and try again." });
     }
     setBusy(false);
   }

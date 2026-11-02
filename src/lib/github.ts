@@ -7,7 +7,7 @@ const API = "https://api.github.com";
 const headers = (token?: string) => ({
   accept: "application/vnd.github+json",
   "x-github-api-version": "2022-11-28",
-  "user-agent": "ShipCheck",
+  "user-agent": "Seaproof",
   ...(token ? { authorization: `Bearer ${token}` } : {}),
 });
 
@@ -94,7 +94,7 @@ export async function createCheckRun(installationId: string | number, fullName: 
   const token = await installationToken(installationId);
   const res = await fetch(`${API}/repos/${fullName}/check-runs`, {
     method: "POST", headers: headers(token),
-    body: JSON.stringify({ name: "ShipCheck", head_sha: headSha, ...body }),
+    body: JSON.stringify({ name: "Seaproof", head_sha: headSha, ...body }),
   });
   if (!res.ok) throw new Error(`GitHub create check run failed (${res.status})`);
   return ((await res.json()) as { id: number }).id;

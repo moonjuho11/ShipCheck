@@ -1,7 +1,7 @@
 import postgres from "postgres";
 
 declare global {
-  var __shipcheckSql: postgres.Sql | undefined;
+  var __seaproofSql: postgres.Sql | undefined;
 }
 
 function makeClient() {
@@ -17,6 +17,6 @@ function makeClient() {
 
 /** Lazily-created shared client (survives Next.js dev hot reloads). */
 export function sql(): postgres.Sql {
-  if (!globalThis.__shipcheckSql) globalThis.__shipcheckSql = makeClient();
-  return globalThis.__shipcheckSql;
+  if (!globalThis.__seaproofSql) globalThis.__seaproofSql = makeClient();
+  return globalThis.__seaproofSql;
 }

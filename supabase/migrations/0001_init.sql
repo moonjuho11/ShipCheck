@@ -1,4 +1,4 @@
--- ShipCheck schema. Works on Supabase or any Postgres 14+.
+-- Seaproof schema. Works on Supabase or any Postgres 14+.
 -- Every table has RLS enabled and NO policies: the app talks to Postgres only
 -- from the server, so the public anon key can read nothing.
 

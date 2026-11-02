@@ -1,8 +1,8 @@
-# ShipCheck
+# Seaproof
 
-**Is your vibe-coded app safe to launch?** ShipCheck is a pre-launch safety audit for apps built with Lovable, Bolt, Cursor, Replit and v0.
+**Is your vibe-coded app safe to launch?** Seaproof is a pre-launch safety audit for apps built with Lovable, Bolt, Cursor, Replit and v0.
 
-Paste a GitHub repo, and optionally your live site. ShipCheck clones the repo into a throwaway sandbox and runs Gitleaks, Semgrep, OSV and its own checks for Supabase, Firebase and Next.js. Claude then double-checks the riskiest files. You get a 0–100 score, a pass/fail **Production Ready** badge, and plain-English findings. Each finding comes with a copy-paste **fix prompt** for your AI agent.
+Paste a GitHub repo, and optionally your live site. Seaproof clones the repo into a throwaway sandbox and runs Gitleaks, Semgrep, OSV and its own checks for Supabase, Firebase and Next.js. Claude then double-checks the riskiest files. You get a 0–100 score, a pass/fail **Production Ready** badge, and plain-English findings. Each finding comes with a copy-paste **fix prompt** for your AI agent.
 
 ![Landing page](docs/screenshots/01-landing.png)
 
@@ -99,14 +99,14 @@ GitHub → Developer settings → **GitHub Apps → New**:
 - Upload `docs/brand/app-icon-512.png` as the app logo.
 - Generate a private key. Put it in `GITHUB_APP_PRIVATE_KEY` with newlines escaped as `\n`. Set `GITHUB_APP_ID` and `GITHUB_APP_SLUG`.
 
-When a Pro user installs the app, every opened or updated PR gets a **ShipCheck** check run: green when Production Ready, red otherwise, with a link to the report. The worker prefers the app's read-only installation token over the user's OAuth token when cloning.
+When a Pro user installs the app, every opened or updated PR gets a **Seaproof** check run: green when Production Ready, red otherwise, with a link to the report. The worker prefers the app's read-only installation token over the user's OAuth token when cloning.
 
 ### 5. Stripe
 
 1. Create a product with two prices: **$29 one-time** and **$49 monthly recurring**. Put their IDs in `STRIPE_PRICE_REPO` and `STRIPE_PRICE_PRO`.
 2. Set `STRIPE_SECRET_KEY`.
 3. Add a webhook endpoint at `${APP_URL}/api/stripe/webhook` with these events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
-4. In **Settings → Branding**, upload `docs/brand/app-icon-512.png` as the icon so Checkout shows the ShipCheck mark.
+4. In **Settings → Branding**, upload `docs/brand/app-icon-512.png` as the icon so Checkout shows the Seaproof mark.
 5. Turn on the **Customer portal** in Stripe settings; the "Manage billing" button uses it.
 
 For local development, forward webhooks with the Stripe CLI:
@@ -123,7 +123,7 @@ Fulfilment is idempotent. It runs from both the webhook and the success redirect
 
 Set `ANTHROPIC_API_KEY`. The worker sends only the riskiest files (up to about 45k tokens) to `claude-opus-5-5`, with anything secret-looking redacted first. Claude rewrites explanations for that exact code, can dismiss heuristic false positives (never secrets, packages or live-site facts), and can add grounded findings it can point to by file and line.
 
-Requests use `fallbacks: "default"`, so a rare safety-classifier refusal on security content is retried on Anthropic's recommended fallback model. If the review fails or is refused, the report falls back to the built-in plain-English templates. Override the model with `SHIPCHECK_MODEL`.
+Requests use `fallbacks: "default"`, so a rare safety-classifier refusal on security content is retried on Anthropic's recommended fallback model. If the review fails or is refused, the report falls back to the built-in plain-English templates. Override the model with `SEAPROOF_MODEL`.
 
 ### 7. Run it
 
@@ -141,7 +141,7 @@ Open http://localhost:3000.
 
 ### Deploying on Railway (what's running now)
 
-The production setup is one Railway project, **ShipCheck**, with three services:
+The production setup is one Railway project, **Seaproof**, with three services:
 
 | Service | Source | Notes |
 |---|---|---|
@@ -157,7 +157,7 @@ Pushing to `main` redeploys both app services. Add the GitHub OAuth, GitHub App,
 - **Worker:** a long-running container with git, Gitleaks and Semgrep. Use `Dockerfile.worker`, then run as many replicas as you like; jobs are claimed with `FOR UPDATE SKIP LOCKED`.
 
 ```bash
-docker build -f Dockerfile.worker -t shipcheck-worker .
+docker build -f Dockerfile.worker -t seaproof-worker .
 ```
 
   Give it a few GB of disk for temp clones, and set `WORKER_CONCURRENCY` (default 2). Stale jobs are re-queued after 30 minutes, and a scan is retried at most twice.
@@ -194,7 +194,7 @@ Then scan it (a live site URL is optional):
 npm run scan:local -- /tmp/taskpal
 ```
 
-**End-to-end smoke test** against a running dev server and worker. It covers CSRF and session guards, cross-user isolation, free-tier stripping, the Stripe webhook, share links and badges. First set `SHIPCHECK_ALLOW_LOCAL_REPOS=1` and `SHIPCHECK_ALLOW_PRIVATE_TARGETS=1` in `.env.local`. Then build both samples:
+**End-to-end smoke test** against a running dev server and worker. It covers CSRF and session guards, cross-user isolation, free-tier stripping, the Stripe webhook, share links and badges. First set `SEAPROOF_ALLOW_LOCAL_REPOS=1` and `SEAPROOF_ALLOW_PRIVATE_TARGETS=1` in `.env.local`. Then build both samples:
 
 ```bash
 npm run sample:make -- insecure-app /tmp/taskpal
@@ -223,13 +223,13 @@ Those two dev switches are ignored when `NODE_ENV=production`.
 ## Known limitations (v1)
 
 - The static checks are heuristics tuned for JS/TS apps (Next.js, Vite/React, Express, Supabase, Firebase). Python and other stacks get secrets, dependency and live-site checks, and Claude review if enabled.
-- The Firebase check reads rules files in the repo. It can't see rules edited only in the Firebase console, and the same applies to Supabase policies created only in the dashboard. If no migrations are committed, ShipCheck reports that instead.
+- The Firebase check reads rules files in the repo. It can't see rules edited only in the Firebase console, and the same applies to Supabase policies created only in the dashboard. If no migrations are committed, Seaproof reports that instead.
 - "Backups" can only be inferred from the repo, so that finding is deliberately low severity.
 - Polling (1.5s) drives the progress UI. Swap in Supabase Realtime or SSE if you need instant updates.
 
 ## Brand assets
 
-The ShipCheck mark lives in [`docs/brand/`](docs/brand): `logo-white.svg` / `logo-black.svg` (transparent), `app-icon.svg` (on the dark background), and 512px PNGs of each for places that need an upload. In code it's `src/components/Logo.tsx`; the browser tab icon (`src/app/icon.svg`) and the SVGs in `docs/brand/` are generated from it:
+The Seaproof mark lives in [`docs/brand/`](docs/brand): `logo-white.svg` / `logo-black.svg` (transparent), `app-icon.svg` (on the dark background), and 512px PNGs of each for places that need an upload. In code it's `src/components/Logo.tsx`; the browser tab icon (`src/app/icon.svg`) and the SVGs in `docs/brand/` are generated from it:
 
 ```bash
 npx tsx scripts/export-brand.ts

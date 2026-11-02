@@ -24,7 +24,7 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
   return (
     <div className="relative overflow-hidden">
       <div className="relative mx-auto max-w-2xl px-5 py-16">
-        <p className="eyebrow text-center">ShipCheck safety report</p>
+        <p className="eyebrow text-center">Seaproof safety report</p>
         <h1 className="headline mt-4 text-center text-[30px] sm:text-[40px]">{s.repo}</h1>
         <p className="mt-2 text-center text-[13px] text-ink-4">
           Scanned {s.finishedAt?.toLocaleDateString()}{s.commitSha ? <> · Commit <span className="font-mono">{s.commitSha.slice(0, 7)}</span></> : null}

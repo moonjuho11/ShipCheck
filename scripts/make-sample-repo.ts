@@ -40,11 +40,11 @@ function fill(dir: string, secrets: Record<string, string>) {
 export function makeSampleRepo(sample: string, dest?: string): { dir: string; secrets: Record<string, string> } {
   const src = path.join(process.cwd(), "samples", sample);
   if (!existsSync(src)) throw new Error(`No sample named ${sample}`);
-  const out = dest || path.join(os.tmpdir(), `shipcheck-sample-${sample}-${randomBytes(3).toString("hex")}`);
+  const out = dest || path.join(os.tmpdir(), `seaproof-sample-${sample}-${randomBytes(3).toString("hex")}`);
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
   const secrets = fakeSecrets();
-  const git = (...a: string[]) => execFileSync("git", ["-c", "user.email=sample@shipcheck.dev", "-c", "user.name=ShipCheck Sample", "-c", "commit.gpgsign=false", ...a], { cwd: out, stdio: "pipe" });
+  const git = (...a: string[]) => execFileSync("git", ["-c", "user.email=sample@seaproof.dev", "-c", "user.name=Seaproof Sample", "-c", "commit.gpgsign=false", ...a], { cwd: out, stdio: "pipe" });
   git("init", "-q", "-b", "main");
   if (sample === "insecure-app") {
     mkdirSync(path.join(out, "config"), { recursive: true });

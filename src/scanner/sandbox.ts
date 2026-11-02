@@ -13,7 +13,7 @@ const SCANNER_CONFIG = [".gitleaks.toml", ".gitleaksignore", ".semgrepignore", "
 export interface Sandbox { dir: string; commitSha?: string; cleanup: () => Promise<void>; }
 
 async function makeDir(): Promise<Sandbox> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "shipcheck-repo-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "seaproof-repo-"));
   return { dir, cleanup: () => fs.rm(dir, { recursive: true, force: true }) };
 }
 

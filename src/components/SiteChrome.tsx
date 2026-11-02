@@ -8,7 +8,7 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-canvas">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-        <Link href="/" aria-label="ShipCheck home"><Wordmark /></Link>
+        <Link href="/" aria-label="Seaproof home"><Wordmark /></Link>
         <nav className="flex items-center gap-1 text-sm">
           <Link href="/#checks" className="hidden rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink md:block">What we check</Link>
           <Link href="/#privacy" className="hidden rounded-lg px-3 py-1.5 text-ink-3 transition hover:text-ink md:block">Privacy</Link>
@@ -51,7 +51,7 @@ export function SiteFooter() {
         <FooterCol title="Account" links={[["My scans", "/dashboard"], ["Sign in", "/api/auth/github?next=/dashboard"]]} />
       </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-t border-line px-6 py-4">
-        <span className="eyebrow">© {new Date().getFullYear()} ShipCheck</span>
+        <span className="eyebrow">© {new Date().getFullYear()} Seaproof</span>
         <span className="eyebrow">Your code is never stored</span>
       </div>
     </footer>

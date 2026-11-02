@@ -1,11 +1,11 @@
-# ShipCheck custom Semgrep rules, tuned for code written by AI app builders.
-# metadata.shipcheck_rule maps a result to the plain-English rule catalog (src/scanner/rules.ts).
+# Seaproof custom Semgrep rules, tuned for code written by AI app builders.
+# metadata.seaproof_rule maps a result to the plain-English rule catalog (src/scanner/rules.ts).
 rules:
   - id: sql-injection-template
     languages: [javascript, typescript]
     severity: ERROR
     message: SQL query built by pasting values into the SQL text
-    metadata: { shipcheck_rule: input.sql-injection }
+    metadata: { seaproof_rule: input.sql-injection }
     pattern-either:
       - pattern: $DB.query(`...${$X}...`, ...)
       - pattern: $DB.execute(`...${$X}...`, ...)
@@ -18,7 +18,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: SQL query built with string concatenation
-    metadata: { shipcheck_rule: input.sql-injection }
+    metadata: { seaproof_rule: input.sql-injection }
     patterns:
       - pattern-either:
           - pattern: $DB.query($STR + $X, ...)
@@ -31,7 +31,7 @@ rules:
     languages: [javascript, typescript]
     severity: WARNING
     message: Supabase .or()/.filter() string built from variables
-    metadata: { shipcheck_rule: input.sql-injection, shipcheck_severity: medium }
+    metadata: { seaproof_rule: input.sql-injection, seaproof_severity: medium }
     pattern-either:
       - pattern: $Q.or(`...${$X}...`, ...)
       - pattern: $Q.filter($C, $OP, `...${$X}...`)
@@ -40,7 +40,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: Raw request data passed into a MongoDB query
-    metadata: { shipcheck_rule: input.nosql-injection }
+    metadata: { seaproof_rule: input.nosql-injection }
     patterns:
       - pattern-either:
           - pattern: $M.$F($REQ.body, ...)
@@ -58,7 +58,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: Shell command built from variables
-    metadata: { shipcheck_rule: input.command-injection }
+    metadata: { seaproof_rule: input.command-injection }
     pattern-either:
       - pattern: exec(`...${$X}...`, ...)
       - pattern: execSync(`...${$X}...`, ...)
@@ -72,7 +72,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: Dynamic code evaluation
-    metadata: { shipcheck_rule: input.code-eval }
+    metadata: { seaproof_rule: input.code-eval }
     patterns:
       - pattern-either:
           - pattern: eval($X)
@@ -83,7 +83,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: HTML inserted without sanitizing
-    metadata: { shipcheck_rule: input.xss }
+    metadata: { seaproof_rule: input.xss }
     patterns:
       - pattern: "{__html: $X}"
       - pattern-not: "{__html: \"...\"}"
@@ -96,7 +96,7 @@ rules:
     languages: [javascript, typescript]
     severity: ERROR
     message: innerHTML / document.write with dynamic content
-    metadata: { shipcheck_rule: input.xss }
+    metadata: { seaproof_rule: input.xss }
     patterns:
       - pattern-either:
           - pattern: $E.innerHTML = $X
@@ -109,7 +109,7 @@ rules:
     languages: [javascript, typescript]
     severity: WARNING
     message: Server-side request to a URL taken from the request
-    metadata: { shipcheck_rule: input.ssrf }
+    metadata: { seaproof_rule: input.ssrf }
     patterns:
       - pattern-either:
           - pattern: fetch($REQ.$P.$X, ...)

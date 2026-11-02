@@ -24,7 +24,7 @@ const SECRETISH = "(?:SECRET|SERVICE_ROLE|SERVICE_KEY|PRIVATE|ADMIN_KEY|PASSWORD
 const PUBLIC_SECRET_RE = new RegExp(`\\b${PUBLIC_PREFIX}[A-Z0-9_]*${SECRETISH}[A-Z0-9_]*\\b`, "g");
 
 async function runGitleaks(ctx: ScanContext, mode: "dir" | "git"): Promise<GitleaksResult[]> {
-  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "shipcheck-gl-"));
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "seaproof-gl-"));
   const report = path.join(tmp, "report.json");
   try {
     const args = mode === "dir"

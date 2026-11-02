@@ -1,5 +1,5 @@
 /**
- * ShipCheck mark: a stepped "S" — three blocks joined at their corners like a
+ * Seaproof mark: a stepped "S" — three blocks joined at their corners like a
  * staircase — leaning forward 10°. Monochrome; reads down to 16px.
  */
 const BLOCKS = "M3 3H29V10H3ZM3 10H9V13H3ZM9 13H23V19H9ZM23 19H29V22H23ZM3 22H29V29H3Z";
@@ -27,7 +27,7 @@ export function Wordmark() {
   return (
     <span className="flex items-center gap-2 text-[15px] font-semibold tracking-tight text-ink">
       <Logo />
-      ShipCheck
+      Seaproof
     </span>
   );
 }

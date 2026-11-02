@@ -23,7 +23,7 @@ const FAQ = [
   { q: "Do you keep my code?", a: "No. We make a temporary copy, scan it, and delete it the moment the scan ends — even if the scan fails. We only keep the findings: a title, a file name, a line number and the fix advice." },
   { q: "Does AI see my code?", a: "When AI review is on, only the riskiest files (not your whole repo) are sent to Claude to double-check findings and explain them in plain English. Anything that looks like a secret key is removed first." },
   { q: "I’m not technical. Will I understand the report?", a: "That’s the point. Every finding says what’s wrong and why it matters in everyday language, plus a ready-made prompt you paste into Lovable, Bolt, Cursor or Replit to fix it." },
-  { q: "Is a passing score a guarantee?", a: "No scanner can promise zero bugs. ShipCheck catches the problems that most often hurt AI-built apps in their first week, so you can fix them before real users arrive." },
+  { q: "Is a passing score a guarantee?", a: "No scanner can promise zero bugs. Seaproof catches the problems that most often hurt AI-built apps in their first week, so you can fix them before real users arrive." },
 ];
 
 const BUILDERS = ["Lovable", "Bolt", "Cursor", "Replit", "v0", "Windsurf"];
@@ -42,7 +42,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           <StaggerItem><p className="eyebrow">Pre-launch security audit for AI-built apps</p></StaggerItem>
           <StaggerItem><h1 className="display mt-6 text-[40px] text-balance sm:text-[56px] lg:text-[64px]">Is your vibe-coded app<br className="hidden sm:block" /> safe to launch?</h1></StaggerItem>
           <StaggerItem><p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-balance text-ink-3 sm:text-lg">
-            ShipCheck finds leaked keys, open databases and pages that skip the login — then writes the prompt your AI agent needs to fix each one.
+            Seaproof finds leaked keys, open databases and pages that skip the login — then writes the prompt your AI agent needs to fix each one.
           </p></StaggerItem>
           <StaggerItem id="scan" className="mx-auto mt-10 max-w-2xl scroll-mt-28">
             {error && <div role="alert" className="mb-3 rounded-lg border border-line-2 bg-panel px-4 py-2.5 text-left text-sm text-ink-2">{error}</div>}
@@ -75,11 +75,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
       {/* ── Statement + figures (Linear) ─────────────────────── */}
       <Section className="px-6 pt-20 pb-0 sm:px-10">
-        <BracketLabel>Why ShipCheck</BracketLabel>
+        <BracketLabel>Why Seaproof</BracketLabel>
         <Reveal>
           <p className="headline mt-6 max-w-4xl text-[28px] sm:text-[40px]">
             A security review for people who don’t read code.{" "}
-            <span className="text-ink-4">ShipCheck checks your app the way a security engineer would, explains every problem in plain English, and hands you the exact fix.</span>
+            <span className="text-ink-4">Seaproof checks your app the way a security engineer would, explains every problem in plain English, and hands you the exact fix.</span>
           </p>
         </Reveal>
         <Stagger gap={0.12} className="mt-16 grid grid-cols-1 border-t border-line sm:grid-cols-3">

@@ -18,7 +18,7 @@ export function ReportPreview() {
       <div className="window relative">
         <div className="flex items-center gap-2 border-b border-line bg-panel-2/60 px-4 py-2.5">
           <span className="h-3 w-3 rounded-full bg-white/10" /><span className="h-3 w-3 rounded-full bg-white/10" /><span className="h-3 w-3 rounded-full bg-white/10" />
-          <span className="ml-3 truncate font-mono text-[11px] text-ink-4">shipcheck.app/scans/acme-taskpal</span>
+          <span className="ml-3 truncate font-mono text-[11px] text-ink-4">seaproof.ai/scans/acme-taskpal</span>
         </div>
         <div className="grid md:grid-cols-[260px_1fr]">
           <aside className="hidden border-r border-line p-5 md:block">

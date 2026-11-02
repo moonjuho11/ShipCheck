@@ -139,7 +139,7 @@ describe("empty repositories", () => {
     const os = await import("node:os");
     const path = await import("node:path");
     const { runScan } = await import("../src/scanner");
-    const dir = mkdtempSync(path.join(os.tmpdir(), "shipcheck-empty-"));
+    const dir = mkdtempSync(path.join(os.tmpdir(), "seaproof-empty-"));
     writeFileSync(path.join(dir, "README.md"), "# hello\n");
     try {
       const r = await runScan({ source: { kind: "local", path: dir } });

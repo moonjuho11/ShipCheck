@@ -9,7 +9,7 @@ interface SemgrepResult {
   check_id: string;
   path: string;
   start: { line: number };
-  extra: { metadata?: { shipcheck_rule?: string; shipcheck_severity?: Severity } };
+  extra: { metadata?: { seaproof_rule?: string; seaproof_severity?: Severity } };
 }
 
 async function runSemgrep(ctx: ScanContext): Promise<RawFinding[]> {
@@ -21,12 +21,12 @@ async function runSemgrep(ctx: ScanContext): Promise<RawFinding[]> {
   if (res.code > 1) throw new Error(`semgrep failed: ${res.stderr.slice(0, 300)}`);
   const json = JSON.parse(res.stdout) as { results: SemgrepResult[] };
   return json.results
-    .filter((r) => r.extra.metadata?.shipcheck_rule)
+    .filter((r) => r.extra.metadata?.seaproof_rule)
     .map((r) => {
       const file = path.relative(ctx.root, path.resolve(ctx.root, r.path)).split(path.sep).join("/");
       return {
-        ruleId: r.extra.metadata!.shipcheck_rule!, source: "semgrep" as const, file, line: r.start.line,
-        severity: r.extra.metadata!.shipcheck_severity, key: `${r.check_id.split(".").pop()}:${r.start.line}`,
+        ruleId: r.extra.metadata!.seaproof_rule!, source: "semgrep" as const, file, line: r.start.line,
+        severity: r.extra.metadata!.seaproof_severity, key: `${r.check_id.split(".").pop()}:${r.start.line}`,
       };
     })
     .filter((f) => !isTestFile(f.file));

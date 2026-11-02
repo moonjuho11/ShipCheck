@@ -85,7 +85,7 @@ async function processJob(job: Job) {
       source,
       siteUrl: scan.site_url,
       anthropicApiKey: env.anthropicApiKey || undefined,
-      model: process.env.SHIPCHECK_MODEL || undefined,
+      model: process.env.SEAPROOF_MODEL || undefined,
       onProgress: async (s) => { steps = s; await updateSteps(scan.id, s); },
     });
     await completeScan(scan.id, result, steps);
@@ -102,7 +102,7 @@ async function processJob(job: Job) {
     if (scan.check_run_id && scan.installation_id) {
       await updateCheckRun(scan.installation_id, scan.repo_full_name, scan.check_run_id, {
         status: "completed", conclusion: "neutral", details_url: `${env.appUrl}/scans/${scan.id}`,
-        output: { title: "ShipCheck couldn't finish this scan", summary: friendly },
+        output: { title: "Seaproof couldn't finish this scan", summary: friendly },
       }).catch(() => {});
     }
     await finishJob(job.id, false, msg.slice(0, 500));

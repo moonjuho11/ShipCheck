@@ -22,9 +22,9 @@ export async function GET(_req: NextRequest, ctx: RouteContext<"/api/badge/[toke
   const { token } = await ctx.params;
   const scan = await latestScanForBadge(token.replace(/\.svg$/, ""));
   let body: string;
-  if (!scan) body = svg("ShipCheck", "not found", "#94a3b8");
-  else if (!(await getEntitlements(scan.user_id)).pro) body = svg("ShipCheck", "badge needs Pro", "#94a3b8");
-  else if (scan.production_ready) body = svg("ShipCheck", `production ready ✓ ${scan.score}`, "#059669");
-  else body = svg("ShipCheck", "not verified", "#94a3b8");
+  if (!scan) body = svg("Seaproof", "not found", "#94a3b8");
+  else if (!(await getEntitlements(scan.user_id)).pro) body = svg("Seaproof", "badge needs Pro", "#94a3b8");
+  else if (scan.production_ready) body = svg("Seaproof", `production ready ✓ ${scan.score}`, "#059669");
+  else body = svg("Seaproof", "not verified", "#94a3b8");
   return new Response(body, { headers: { "content-type": "image/svg+xml; charset=utf-8", "cache-control": "public, max-age=300, s-maxage=300" } });
 }

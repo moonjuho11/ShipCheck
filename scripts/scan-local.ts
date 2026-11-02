@@ -7,7 +7,7 @@ async function main() {
   if (!dir) { console.error("usage: npm run scan:local -- <folder> [site-url]"); process.exit(1); }
   const res = await runScan({
     source: { kind: "local", path: dir }, siteUrl,
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY, model: process.env.SHIPCHECK_MODEL || undefined,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY, model: process.env.SEAPROOF_MODEL || undefined,
     onProgress: (steps) => { const s = steps.find((x) => x.status === "running"); if (s) process.stderr.write(`… ${s.label}\n`); },
   });
   console.log(`\nScore: ${res.score}/100  ${res.productionReady ? "✅ Production Ready" : "❌ Not production ready"}`);

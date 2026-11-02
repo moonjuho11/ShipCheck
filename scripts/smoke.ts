@@ -1,7 +1,7 @@
 // End-to-end smoke test against a running DEV server + worker (never production).
 //   1. npm run dev   2. npm run worker   3. npm run sample:make -- insecure-app /tmp/taskpal
 //   4. npx tsx --env-file=.env.local scripts/smoke.ts /tmp/taskpal [/tmp/notely]
-// Requires SHIPCHECK_ALLOW_LOCAL_REPOS=1 and SHIPCHECK_ALLOW_PRIVATE_TARGETS=1 in .env.local.
+// Requires SEAPROOF_ALLOW_LOCAL_REPOS=1 and SEAPROOF_ALLOW_PRIVATE_TARGETS=1 in .env.local.
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { createHmac } from "node:crypto";

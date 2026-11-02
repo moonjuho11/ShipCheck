@@ -38,14 +38,14 @@ export async function POST(req: Request) {
   if (event === "pull_request" && p.pull_request && p.repository && p.installation) {
     if (!["opened", "synchronize", "reopened", "ready_for_review"].includes(p.action || "") || p.pull_request.draft) return Response.json({ ignored: "action" });
     const [inst] = await db<{ user_id: string | null }[]>`select user_id from github_installations where installation_id = ${p.installation.id}`;
-    if (!inst?.user_id) return Response.json({ ignored: "installation not linked to a ShipCheck account" });
+    if (!inst?.user_id) return Response.json({ ignored: "installation not linked to a Seaproof account" });
     const ent = await getEntitlements(inst.user_id);
     if (!ent.pro) return Response.json({ ignored: "PR checks need Pro" });
     const [{ busy }] = await db<{ busy: number }[]>`select count(*)::int as busy from scans where user_id = ${inst.user_id} and status in ('queued','running')`;
     if (busy >= 10) return Response.json({ ignored: "too many scans queued" });
 
     const fullName = p.repository.full_name;
-    const checkRunId = await createCheckRun(p.installation.id, fullName, p.pull_request.head.sha, { status: "queued", output: { title: "Queued", summary: "ShipCheck will scan this pull request shortly." } });
+    const checkRunId = await createCheckRun(p.installation.id, fullName, p.pull_request.head.sha, { status: "queued", output: { title: "Queued", summary: "Seaproof will scan this pull request shortly." } });
     await createScan({
       userId: inst.user_id, repoFullName: fullName.toLowerCase(), repoUrl: `https://github.com/${fullName}.git`,
       ref: `refs/pull/${p.pull_request.number}/head`, trigger: "pr", prNumber: p.pull_request.number,

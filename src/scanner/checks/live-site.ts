@@ -8,7 +8,7 @@ export function normalizeSiteUrl(input: string): string {
   return /^https?:\/\//i.test(s) ? s : `https://${s}`;
 }
 
-const EVIL_ORIGIN = "https://shipcheck-cors-test.example";
+const EVIL_ORIGIN = "https://seaproof-cors-test.example";
 
 const PROBES: { path: string; what: string; severity: Severity; looksReal: (r: SafeResponse) => boolean }[] = [
   { path: "/.env", what: "your secrets file (.env)", severity: "critical", looksReal: (r) => /^\s*[A-Z_][A-Z0-9_]*\s*=/m.test(r.body) && !/<html/i.test(r.body) },
@@ -69,7 +69,7 @@ export async function checkLiveSite(siteUrl: string): Promise<{ findings: RawFin
   const input = new URL(normalizeSiteUrl(siteUrl));
   const httpsUrl = `https://${input.host}/`;
   const httpUrl = `http://${input.host}/`;
-  const local = input.protocol === "http:" && process.env.SHIPCHECK_ALLOW_PRIVATE_TARGETS === "1" && process.env.NODE_ENV !== "production";
+  const local = input.protocol === "http:" && process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS === "1" && process.env.NODE_ENV !== "production";
 
   // 1) HTTPS
   let home = local ? await tryFetch(input.toString(), { follow: true }) : await tryFetch(httpsUrl, { follow: true });
@@ -141,7 +141,7 @@ export async function checkLiveSite(siteUrl: string): Promise<{ findings: RawFin
   }
 
   // 5) Exposed private paths (compared to a random 404 to avoid single-page-app false alarms)
-  const baseline = await tryFetch(`${origin}/shipcheck-${randomBytes(6).toString("hex")}`);
+  const baseline = await tryFetch(`${origin}/seaproof-${randomBytes(6).toString("hex")}`);
   for (const probe of PROBES) {
     const r = await tryFetch(origin + probe.path, { maxBytes: 300_000 });
     if (!r || r.status !== 200 || sameAsFallback(r, baseline) || !probe.looksReal(r)) continue;
