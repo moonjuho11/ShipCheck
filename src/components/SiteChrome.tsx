@@ -38,39 +38,18 @@ export async function SiteHeader() {
   );
 }
 
+const FOOTER_LINKS: [string, string][] = [["What we check", "/#checks"], ["Privacy", "/#privacy"], ["Pricing", "/pricing"], ["FAQ", "/#faq"]];
+
 export function SiteFooter() {
   return (
     <footer className="relative mt-24 border-t border-line">
-      <div className="mx-auto grid max-w-6xl gap-10 border-x border-line px-6 py-12 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div>
-          <Wordmark />
-          <p className="mt-3 max-w-xs text-sm text-ink-3">The safety check for apps built with AI. Find the holes before your users do.</p>
-        </div>
-        <FooterCol title="Product" links={[["What we check", "/#checks"], ["How it works", "/#how"], ["Pricing", "/pricing"]]} />
-        <FooterCol title="Trust" links={[["Privacy", "/#privacy"], ["FAQ", "/#faq"]]} />
-        <FooterCol title="Account" links={[["My scans", "/dashboard"], ["Sign in", "/api/auth/github?next=/dashboard"]]} />
-      </div>
-      <div className="mx-auto flex max-w-6xl items-center justify-between border-x border-t border-line px-6 py-4">
-        <span className="eyebrow">© {new Date().getFullYear()} Seaproof</span>
-        <span className="eyebrow">Your code is never stored</span>
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 border-x border-line px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <Wordmark />
+        <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          {FOOTER_LINKS.map(([l, h]) => <li key={l}><Link href={h} className="text-ink-3 transition hover:text-ink">{l}</Link></li>)}
+        </ul>
+        <span className="text-[13px] text-ink-4">© {new Date().getFullYear()} Seaproof</span>
       </div>
     </footer>
-  );
-}
-
-function FooterCol({ title, links }: { title: string; links: [string, string][] }) {
-  return (
-    <div>
-      <p className="eyebrow">{title}</p>
-      <ul className="mt-3 space-y-2 text-sm">
-        {links.map(([l, h]) => (
-          <li key={l}>
-            {/* Server routes (sign-in) and signed-in pages are never prefetched. */}
-            {h.startsWith("/api/") ? <a href={h} className="text-ink-3 transition hover:text-ink">{l}</a>
-              : <Link href={h} prefetch={h === "/dashboard" ? false : undefined} className="text-ink-3 transition hover:text-ink">{l}</Link>}
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }

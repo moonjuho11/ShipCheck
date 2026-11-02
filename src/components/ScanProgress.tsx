@@ -7,7 +7,7 @@ import { Spinner } from "./ScanForm";
 import { AnimatePresence, EASE, m } from "./motion";
 import { CheckIcon } from "./ui";
 
-export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId: string; initialSteps: Step[]; repo: string; startedAt: string }) {
+export function ScanProgress({ scanId, initialSteps, startedAt }: { scanId: string; initialSteps: Step[]; startedAt: string }) {
   const router = useRouter();
   const [steps, setSteps] = useState(initialSteps);
   const [status, setStatus] = useState("queued");
@@ -57,16 +57,11 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
               <AnimatePresence mode="wait" initial={false}><m.span key={s.status} className="inline-flex shrink-0" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { duration: 0.25, ease: EASE } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}><StepIcon status={s.status} /></m.span></AnimatePresence>
               <div className="min-w-0 flex-1">
                 <p className={`text-[14px] ${s.status === "pending" ? "text-ink-4" : s.status === "skipped" ? "text-ink-4 line-through decoration-ink-4/60" : s.status === "running" ? "text-ink" : "text-ink-2"}`}>{s.label}</p>
-                {s.detail && <p className="mt-0.5 text-[12px] text-ink-4">{s.detail}</p>}
               </div>
               <span className="mt-0.5 text-[12px] text-ink-4">{STATUS_TEXT[s.status]}</span>
             </li>
           ))}
         </ol>
-        <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-[12px] text-ink-4">
-          <span className="truncate">{repo}</span>
-          <span>You can close this tab; the scan keeps running.</span>
-        </div>
       </div>
     </div>
   );

@@ -27,10 +27,7 @@ export function ScanTerminal() {
       viewport={{ once: true, margin: "0px 0px -15% 0px" }}
       transition={{ duration: 0.5, ease: EASE }}
     >
-      <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
-        <span className="eyebrow">scan · acme/taskpal</span>
-        <span className="text-[12px] text-ink-4">Example</span>
-      </div>
+      <div className="border-b border-line px-4 py-2.5 font-mono text-[12px] text-ink-4">scan · acme/taskpal</div>
       <m.ol
         className="space-y-1.5 p-4 font-mono text-[12px] leading-relaxed"
         initial="hidden"

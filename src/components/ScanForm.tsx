@@ -6,7 +6,6 @@ import { GitHubIcon, Kbd } from "./ui";
 
 interface Props {
   signedIn: boolean;
-  hasPrivateAccess: boolean;
   initialRepo?: string;
   initialSite?: string;
   autostart?: boolean;
@@ -15,9 +14,7 @@ interface Props {
 
 type Problem = { message: string; action?: { label: string; href: string } };
 
-const CHECKS = ["Secrets", "Database", "Login", "Input", "Packages", "Live site", "Launch basics"];
-
-export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initialSite = "", autostart, compact }: Props) {
+export function ScanForm({ signedIn, initialRepo = "", initialSite = "", autostart, compact }: Props) {
   const router = useRouter();
   const [repo, setRepo] = useState(initialRepo);
   const [site, setSite] = useState(initialSite);
@@ -71,11 +68,10 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
       </label>
       <label className="flex items-center gap-3 border-t border-line px-4 py-2.5">
         <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-ink-4" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden><circle cx="8" cy="8" r="6.2" /><path d="M1.8 8h12.4M8 1.8c1.8 2 1.8 10.4 0 12.4M8 1.8c-1.8 2-1.8 10.4 0 12.4" /></svg>
-        <span className="eyebrow shrink-0">Live site</span>
         <input
           name="site" autoComplete="off" spellCheck={false}
           className="min-w-0 flex-1 bg-transparent font-mono text-[13px] text-ink-2 placeholder:text-ink-4 focus:outline-none"
-          placeholder="optional — your-app.lovable.app" value={site} onChange={(e) => setSite(e.target.value)}
+          placeholder="Live site (optional)" value={site} onChange={(e) => setSite(e.target.value)}
         />
       </label>
       {problem && (
@@ -84,27 +80,11 @@ export function ScanForm({ signedIn, hasPrivateAccess, initialRepo = "", initial
           {problem.action && <a href={problem.action.href} className="font-medium text-ink underline decoration-ink-4 underline-offset-4 hover:decoration-ink">{problem.action.label} →</a>}
         </div>
       )}
-      <div className="flex items-center justify-between gap-3 border-t border-line bg-panel-2 px-3 py-2.5">
-        <div className="hidden min-w-0 items-center gap-1.5 overflow-hidden md:flex">
-          {CHECKS.slice(0, compact ? 3 : 5).map((c) => (
-            <span key={c} className="flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] whitespace-nowrap text-ink-3">
-              <span className="h-1 w-1 rounded-full bg-ink-4" />{c}
-            </span>
-          ))}
-          <span className="px-1 text-[11px] whitespace-nowrap text-ink-4">+{CHECKS.length - (compact ? 3 : 5)} more</span>
-        </div>
-        <p className="text-[11px] text-ink-4 md:hidden">
-          {signedIn ? (hasPrivateAccess ? "Public & private repos" : "Public repos") : "Sign in with GitHub to scan"}
-        </p>
+      <div className="flex justify-end border-t border-line bg-panel-2 px-3 py-2.5">
         <button type="submit" disabled={busy} className="btn-accent !h-9 shrink-0 !px-4">
           {busy ? <><Spinner /> Starting…</> : <>Scan my app</>}
         </button>
       </div>
-      {!compact && signedIn && !hasPrivateAccess && (
-        <div className="border-t border-line px-4 py-2 text-[12px] text-ink-4">
-          Private repo? <a className="text-ink-3 underline decoration-ink-4 underline-offset-4 hover:text-ink" href="/api/auth/github?scope=repo&next=/">Connect private repo access</a>
-        </div>
-      )}
     </form>
   );
 }
