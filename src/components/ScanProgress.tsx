@@ -34,7 +34,7 @@ export function ScanProgress({ scanId, initialSteps, repo, startedAt }: { scanId
     return () => { alive = false; clearTimeout(timer); clearInterval(clock); };
   }, [scanId, router]);
 
-  const done = steps.filter((s) => s.status === "done" || s.status === "skipped").length;
+  const done = steps.filter((s) => s.status === "done" || s.status === "skipped" || s.status === "failed").length;
   const pct = Math.round((done / Math.max(1, steps.length)) * 100);
   const elapsed = now === null ? 0 : Math.max(0, (now - new Date(startedAt).getTime()) / 1000);
 

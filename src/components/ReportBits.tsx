@@ -35,8 +35,8 @@ export function CountTiles({ counts }: { counts: Record<Severity, number> }) {
 }
 
 /** "3 issues" / "Passed" / "Not checked" — neutral text, sans, no colour coding. */
-export function AreaStatus({ count, checked = true }: { count: number; checked?: boolean }) {
+export function AreaStatus({ count, checked = true, partial = false }: { count: number; checked?: boolean; partial?: boolean }) {
   if (!checked) return <span className="text-[13px] text-ink-4">Not checked</span>;
-  if (count === 0) return <span className="text-[13px] text-ink-4">Passed</span>;
-  return <span className="text-[13px] text-ink-2 tabular-nums">{count} {count === 1 ? "issue" : "issues"}</span>;
+  if (count === 0) return <span className="text-[13px] text-ink-4">{partial ? "Not fully checked" : "Passed"}</span>;
+  return <span className="text-[13px] text-ink-2 tabular-nums">{count} {count === 1 ? "issue" : "issues"}{partial ? " so far" : ""}</span>;
 }

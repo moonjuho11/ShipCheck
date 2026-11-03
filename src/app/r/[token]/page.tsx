@@ -41,7 +41,7 @@ export default async function PublicReport({ params }: PageProps<"/r/[token]">) 
             {s.areas.map((a) => (
               <li key={a.key} className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5 last:border-0">
                 <div><p className="text-[14px] text-ink">{a.label}</p><p className="text-[12px] text-ink-4">{a.blurb}</p></div>
-                <AreaStatus count={a.count} checked={!(a.key === "live_site" && !s.liveChecked)} />
+                <AreaStatus count={a.count} checked={!(a.key === "live_site" && !s.liveChecked)} partial={a.partial} />
               </li>
             ))}
           </ul>

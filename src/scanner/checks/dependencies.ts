@@ -204,7 +204,9 @@ export async function checkDependencies(ctx: ScanContext): Promise<{ findings: R
     const directOnes = perPackage.filter((f) => f.vars?.direct);
     const transitive = perPackage.filter((f) => !f.vars?.direct).slice(0, 15);
     findings.push(...directOnes, ...transitive);
-    return { findings, osv: "ok", depCount: deps.length };
+    // A vulnerability we couldn't look up reads as "medium" above, but could be critical.
+    const allKnown = hits.every((h) => h.ids.every((id) => vulnCache.has(id)));
+    return { findings, osv: allKnown ? "ok" : "failed", depCount: deps.length };
   } catch {
     return { findings, osv: "failed", depCount: deps.length };
   }

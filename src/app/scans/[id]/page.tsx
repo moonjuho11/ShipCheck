@@ -23,7 +23,8 @@ function verdict(counts: Record<Severity, number>, ready: boolean): string {
     ? "We didn’t find any problems. Nice work — your app looks ready for real users."
     : "No serious problems found. A few smaller things are worth tidying up when you have time.";
   if (counts.critical) return `We found ${counts.critical} critical problem${counts.critical > 1 ? "s" : ""}. Start there — each one could let a stranger take over accounts, read your data or run up your bills.`;
-  return `We found ${counts.high} serious problem${counts.high > 1 ? "s" : ""} to fix before launch. None are disasters on their own, but each is easy to abuse.`;
+  if (counts.high) return `We found ${counts.high} serious problem${counts.high > 1 ? "s" : ""} to fix before launch. None are disasters on their own, but each is easy to abuse.`;
+  return "We didn’t find anything serious, but we couldn’t check everything, so we can’t call your app ready yet.";
 }
 
 export default async function ScanPage({ params, searchParams }: PageProps<"/scans/[id]">) {
@@ -92,6 +93,7 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
               <div className="space-y-2 sm:border-l sm:border-line sm:pl-10">
                 <ReadyBadge ready={ready} />
                 <p className="text-[15px] leading-relaxed text-ink-3">{verdict(counts, ready)}</p>
+                {notes.length > 0 && <ul className="space-y-1 pt-1 text-[13px] leading-relaxed text-ink-3">{notes.map((n) => <li key={n}>{n}</li>)}</ul>}
               </div>
             </div>
             <div className="mt-6"><CountTiles counts={counts} /></div>
@@ -114,8 +116,8 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
 
           {report.findings.length === 0 ? (
             <section className="window p-12 text-center">
-              <h2 className="text-xl font-semibold text-ink">Nothing to fix</h2>
-              <p className="mt-1 text-ink-3">We didn’t find any of the problems we check for.</p>
+              <h2 className="text-xl font-semibold text-ink">{ready ? "Nothing to fix" : "Nothing to fix so far"}</h2>
+              <p className="mt-1 text-ink-3">{ready ? "We didn’t find any of the problems we check for." : "We didn’t find any problems in the checks that finished."}</p>
             </section>
           ) : (
             <Reveal onMount delay={0.14} y={10}><section className="window">
@@ -146,10 +148,11 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
               {Object.entries(CATEGORY_LABELS).map(([key, c]) => {
                 const items = report.findings.filter((f) => f.category === key);
                 const skipped = key === "live_site" && !scan.site_url;
+                const partial = scan.steps.some((s) => s.key === key && s.status === "failed");
                 return (
                   <li key={key} className="flex items-center justify-between gap-2">
                     <span className="text-ink-2">{c.label}</span>
-                    <AreaStatus count={items.length} checked={!skipped} />
+                    <AreaStatus count={items.length} checked={!skipped} partial={partial} />
                   </li>
                 );
               })}
@@ -160,7 +163,6 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
             <ul className="mt-3 space-y-1.5 leading-relaxed">
               <li>{scan.meta.filesScanned ?? 0} files read, then deleted.</li>
               <li>{scan.meta.aiReviewedFiles?.length ? `AI double-checked ${scan.meta.aiReviewedFiles.length} of the riskiest files.` : "AI review was not used for this scan."}</li>
-              {notes.map((n) => <li key={n}>{n}</li>)}
             </ul>
           </details>
         </Reveal>

@@ -63,7 +63,8 @@ export function publicSummary(scan: ScanRow, findings: FindingRow[]) {
   const areas = Object.entries(CATEGORY_LABELS).map(([key, c]) => {
     const items = findings.filter((f) => f.category === key);
     const worst = (["critical", "high", "medium", "low"] as Severity[]).find((s) => items.some((f) => f.severity === s)) ?? null;
-    return { key, label: c.label, blurb: c.blurb, count: items.length, worst };
+    const partial = scan.steps.some((s) => s.key === key && s.status === "failed");
+    return { key, label: c.label, blurb: c.blurb, count: items.length, worst, partial };
   });
   return {
     repo: scan.repo_full_name, score: scan.score ?? 0, productionReady: !!scan.production_ready,

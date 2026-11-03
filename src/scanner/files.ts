@@ -31,15 +31,16 @@ function isTextCandidate(name: string): boolean {
  * Read the repo into memory. Symlinks are skipped (a malicious repo could point
  * one at /etc/passwd), as are binaries, vendored folders and huge files.
  */
-export async function readRepo(root: string): Promise<RepoFile[]> {
+export async function readRepo(root: string): Promise<{ files: RepoFile[]; truncated: boolean }> {
   const out: RepoFile[] = [];
   let total = 0;
+  let truncated = false;
   async function walk(dir: string) {
     if (out.length >= MAX_FILES) return;
     const entries = await fs.readdir(dir, { withFileTypes: true });
     entries.sort((a, b) => a.name.localeCompare(b.name));
     for (const e of entries) {
-      if (out.length >= MAX_FILES || total >= MAX_TOTAL_BYTES) return;
+      if (out.length >= MAX_FILES || total >= MAX_TOTAL_BYTES) { truncated = true; return; }
       const abs = path.join(dir, e.name);
       if (e.isSymbolicLink()) continue;
       if (e.isDirectory()) {
@@ -58,7 +59,7 @@ export async function readRepo(root: string): Promise<RepoFile[]> {
     }
   }
   await walk(root);
-  return out;
+  return { files: out, truncated };
 }
 
 export function detectProject(files: RepoFile[]): ProjectInfo {
@@ -89,10 +90,10 @@ export function detectProject(files: RepoFile[]): ProjectInfo {
 }
 
 export async function buildContext(root: string): Promise<ScanContext> {
-  const files = await readRepo(root);
+  const { files, truncated } = await readRepo(root);
   let hasGitHistory = false;
   try { hasGitHistory = (await fs.stat(path.join(root, ".git"))).isDirectory(); } catch { /* no git */ }
-  return { root, files, byPath: new Map(files.map((f) => [f.path, f])), project: detectProject(files), hasGitHistory };
+  return { root, files, byPath: new Map(files.map((f) => [f.path, f])), project: detectProject(files), hasGitHistory, truncated };
 }
 
 /** 1-based line number of a character offset. */

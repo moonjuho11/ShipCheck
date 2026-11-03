@@ -52,6 +52,8 @@ export interface ScanContext {
   byPath: Map<string, RepoFile>;
   project: ProjectInfo;
   hasGitHistory: boolean;
+  /** The repo hit our read limits, so some files were never looked at. */
+  truncated?: boolean;
 }
 
 export type StepKey =
