@@ -1,7 +1,8 @@
 import { promises as dns } from "node:dns";
 import net from "node:net";
+import { ScanRejected } from "./errors";
 
-export class BlockedTargetError extends Error {}
+export class BlockedTargetError extends ScanRejected {}
 
 function ipv4ToInt(ip: string): number {
   return ip.split(".").reduce((a, o) => (a << 8) + Number(o), 0) >>> 0;

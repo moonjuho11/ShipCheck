@@ -1,3 +1,4 @@
+import type postgres from "postgres";
 import { sql } from "./db";
 
 export const PLANS = {
@@ -39,9 +40,8 @@ export function reportAccess(ent: Entitlements, repoFullName: string): ReportAcc
 
 export type ScanPermission = { ok: true; via: "pro" | "repo" | "free" } | { ok: false; message: string; upgrade?: "repo" | "pro" };
 
-export async function canStartScan(userId: string, repoFullName: string, ent?: Entitlements): Promise<ScanPermission> {
+export async function canStartScan(userId: string, repoFullName: string, ent?: Entitlements, db: postgres.Sql | postgres.TransactionSql = sql()): Promise<ScanPermission> {
   const e = ent ?? (await getEntitlements(userId));
-  const db = sql();
   const [{ active }] = await db<{ active: number }[]>`
     select count(*)::int as active from scans where user_id = ${userId} and status in ('queued','running')`;
   if (active >= MAX_ACTIVE_SCANS) return { ok: false, message: "You already have scans running. Please wait for them to finish." };
@@ -51,14 +51,14 @@ export async function canStartScan(userId: string, repoFullName: string, ent?: E
   if (unlockedAt) {
     const [{ n }] = await db<{ n: number }[]>`
       select count(*)::int as n from scans
-      where user_id = ${userId} and repo_full_name = ${repoFullName} and status <> 'failed' and created_at >= ${unlockedAt}`;
+      where user_id = ${userId} and repo_full_name = ${repoFullName} and status not in ('failed','canceled') and created_at >= ${unlockedAt}`;
     if (n < PLANS.repo.scansIncluded) return { ok: true, via: "repo" };
   }
 
   const unlockedRepos = [...e.unlocked.keys()];
   const [{ used }] = await db<{ used: number }[]>`
     select count(*)::int as used from scans
-    where user_id = ${userId} and trigger = 'manual' and status <> 'failed'
+    where user_id = ${userId} and trigger = 'manual' and status not in ('failed','canceled')
       and created_at >= date_trunc('month', now())
       and not (repo_full_name = any(${unlockedRepos}::text[]))`;
   if (used < PLANS.free.scansPerMonth) return { ok: true, via: "free" };

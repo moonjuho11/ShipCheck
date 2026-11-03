@@ -20,7 +20,7 @@ export interface ScanRow {
   repo_ref: string | null;
   commit_sha: string | null;
   site_url: string | null;
-  status: "queued" | "running" | "completed" | "failed";
+  status: "queued" | "running" | "completed" | "failed" | "canceled";
   steps: Step[];
   score: number | null;
   production_ready: boolean | null;

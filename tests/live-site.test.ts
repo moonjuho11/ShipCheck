@@ -1,8 +1,9 @@
+import dns from "node:dns";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { checkLiveSite } from "../src/scanner/checks/live-site";
-import { assertPublicUrl, BlockedTargetError, isPrivateIp } from "../src/scanner/net";
+import { assertPublicUrl, BlockedTargetError, isPrivateIp, safeFetch } from "../src/scanner/net";
 
 // Assembled at runtime so the repo never contains a key-shaped string.
 const FAKE_STRIPE = ["sk", "live", "Zq8vN3kP0aLmT7rYbW2cXe5dGh9JsU4f"].join("_");
@@ -94,6 +95,45 @@ describe("SSRF protection", () => {
       expect(isPrivateIp(ip), ip).toBe(true);
     }
     for (const ip of ["8.8.8.8", "1.1.1.1", "104.20.23.154", "2606:4700::1111"]) expect(isPrivateIp(ip), ip).toBe(false);
+  });
+
+  it("isn't fooled by other ways of writing a private IPv4 address in IPv6", () => {
+    for (const ip of [
+      "::ffff:7f00:1",       // 127.0.0.1, IPv4-mapped in hex
+      "::ffff:a9fe:a9fe",    // 169.254.169.254, the cloud metadata address
+      "0:0:0:0:0:ffff:0a00:0001", // 10.0.0.1, written out in full
+      "::127.0.0.1",         // IPv4-compatible
+      "::7f00:1",
+      "64:ff9b::7f00:1",     // NAT64
+      "2002:7f00:1::",       // 6to4
+      "2001:0:4136:e378:8000:63bf:3fff:fdd2", // Teredo
+      "fec0::1",             // old site-local
+    ]) expect(isPrivateIp(ip), ip).toBe(true);
+    expect(isPrivateIp("::ffff:8.8.8.8")).toBe(false);
+    expect(isPrivateIp("::ffff:808:808")).toBe(false);
+  });
+
+  it("re-checks the address when connecting, so a domain can't switch to a private IP after the check", async () => {
+    const prev = process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS;
+    delete process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS;
+    let hits = 0;
+    const internal = http.createServer((_req, res) => { hits++; res.end("internal secret"); });
+    await new Promise<void>((r) => internal.listen(0, "127.0.0.1", () => r()));
+    const port = (internal.address() as AddressInfo).port;
+    // First lookup (the check) says public; the one made when connecting says localhost.
+    const check = vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never);
+    const connect = vi.spyOn(dns, "lookup").mockImplementation(((_h: string, o: { all?: boolean }, cb: (e: null, a: unknown, f?: number) => void) => {
+      if (o.all) cb(null, [{ address: "127.0.0.1", family: 4 }]); else cb(null, "127.0.0.1", 4);
+    }) as never);
+    try {
+      await expect(safeFetch(`http://rebind.example:${port}/`)).rejects.toBeInstanceOf(BlockedTargetError);
+      expect(hits).toBe(0);
+    } finally {
+      check.mockRestore();
+      connect.mockRestore();
+      internal.close();
+      if (prev) process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS = prev;
+    }
   });
 
   it("refuses internal targets and non-http schemes", async () => {

@@ -6,11 +6,12 @@ import { checkInput } from "./checks/input";
 import { checkLiveSite } from "./checks/live-site";
 import { checkProduction } from "./checks/production";
 import { checkSecrets } from "./checks/secrets";
+import { ScanRejected } from "./errors";
 import { hasBinary } from "./exec";
 import { buildContext, isCode } from "./files";
 import { aiReview } from "./llm";
 import { dedupe, enrich } from "./rules";
-import { cloneGitHub, copyLocal, type ParsedRepo, type Sandbox } from "./sandbox";
+import { cloneGitHub, copyLocal, HISTORY_DEPTH, type ParsedRepo, type Sandbox } from "./sandbox";
 import { score } from "./score";
 import { initialSteps, STEP_LABELS } from "./steps";
 import { SEVERITIES, type Finding, type RawFinding, type ScanResult, type Step, type StepKey } from "./types";
@@ -51,8 +52,9 @@ export async function runScan(input: ScanInput): Promise<ScanResult> {
       await set(key, why ? "failed" : "done", why ?? detail?.(r));
       return r;
     } catch (e) {
+      console.error(`[scan] ${key} check crashed:`, e);
       await set(key, "failed", "This check hit an error and was skipped.");
-      notes.push(`${STEP_LABELS[key]}: ${(e as Error).message}`);
+      notes.push(`${STEP_LABELS[key]}: ${e instanceof ScanRejected ? e.message : "this check hit an error and was skipped."}`);
       return undefined;
     }
   };
@@ -66,9 +68,10 @@ export async function runScan(input: ScanInput): Promise<ScanResult> {
         ? await cloneGitHub(input.source.repo, { token: input.source.token, ref: input.source.ref })
         : await copyLocal(input.source.path);
     } catch (e) {
-      await set("clone", "failed", (e as Error).message);
+      await set("clone", "failed", e instanceof ScanRejected ? e.message : "We couldn't download your code.");
       throw e;
     }
+    if (sandbox.historyCapped) notes.push(`We searched your last ${HISTORY_DEPTH} commits for old secrets. Anything older wasn't checked.`);
     const ctx = await buildContext(sandbox.dir);
     const codeFiles = ctx.files.filter((f) => isCode(f.path)).length;
     await set("clone", "done", `${ctx.files.length} files read`);

@@ -3,8 +3,7 @@ import { z } from "zod";
 import { decrypt } from "@/lib/crypto";
 import { env } from "@/lib/env";
 import { checkRepoAccess } from "@/lib/github";
-import { canStartScan } from "@/lib/plans";
-import { createScan } from "@/lib/scans";
+import { startManualScan } from "@/lib/scans";
 import { getCurrentUser, isSameOrigin } from "@/lib/session";
 import { normalizeSiteUrl } from "@/scanner/checks/live-site";
 import { assertPublicUrl, BlockedTargetError } from "@/scanner/net";
@@ -56,9 +55,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const perm = await canStartScan(user.id, repoFullName);
-  if (!perm.ok) return err(402, perm.message, { code: "upgrade_required", upgrade: perm.upgrade, repo: repoFullName });
-
-  const scan = await createScan({ userId: user.id, repoFullName, repoUrl: cloneUrl, siteUrl });
-  return NextResponse.json({ id: scan.id }, { status: 201 });
+  const started = await startManualScan({ userId: user.id, repoFullName, repoUrl: cloneUrl, siteUrl });
+  if ("message" in started) return err(402, started.message, { code: "upgrade_required", upgrade: started.upgrade, repo: repoFullName });
+  return NextResponse.json({ id: started.scan.id }, { status: 201 });
 }
