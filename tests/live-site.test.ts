@@ -1,6 +1,7 @@
 import dns from "node:dns";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
+import { gzipSync } from "node:zlib";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { checkLiveSite } from "../src/scanner/checks/live-site";
 import { assertPublicUrl, BlockedTargetError, isPrivateIp, safeFetch } from "../src/scanner/net";
@@ -133,6 +134,25 @@ describe("SSRF protection", () => {
       connect.mockRestore();
       internal.close();
       if (prev) process.env.SEAPROOF_ALLOW_PRIVATE_TARGETS = prev;
+    }
+  });
+
+  it("reads compressed responses, follows redirects and stops at the size limit", async () => {
+    const site = http.createServer((req, res) => {
+      if (req.url === "/moved") { res.writeHead(302, { location: "/zipped" }); return res.end(); }
+      if (req.url === "/zipped") { res.setHeader("content-encoding", "gzip"); return res.end(gzipSync("hello from gzip")); }
+      res.end("x".repeat(100_000));
+    });
+    await new Promise<void>((r) => site.listen(0, "127.0.0.1", () => r()));
+    const base = `http://127.0.0.1:${(site.address() as AddressInfo).port}`;
+    try {
+      const followed = await safeFetch(`${base}/moved`, { follow: true });
+      expect(followed.url).toBe(`${base}/zipped`);
+      expect(followed.body).toBe("hello from gzip");
+      expect((await safeFetch(`${base}/moved`)).status).toBe(302);
+      expect((await safeFetch(`${base}/big`, { maxBytes: 1000 })).body).toHaveLength(1000);
+    } finally {
+      site.close();
     }
   });
 

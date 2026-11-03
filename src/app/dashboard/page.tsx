@@ -71,7 +71,7 @@ export default async function Dashboard() {
                         <span className="w-16 text-right text-ink-3">{s.production_ready ? "Ready" : "Not ready"}</span>
                       </div>
                     ) : (
-                      <span className="text-[13px] text-ink-3">{s.status === "failed" ? "Failed" : "Scanning…"}</span>
+                      <span className="text-[13px] text-ink-3">{s.status === "failed" ? "Failed" : s.status === "canceled" ? "Canceled" : "Scanning…"}</span>
                     )}
                     <ArrowRight className="h-3.5 w-3.5 text-ink-4 transition group-hover:translate-x-0.5 group-hover:text-ink-2" />
                   </Link>

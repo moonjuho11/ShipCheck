@@ -47,22 +47,23 @@ export default async function ScanPage({ params, searchParams }: PageProps<"/sca
           {scan.site_url ? <span>{new URL(scan.site_url).host}</span> : null}
         </p>
       </div>
-      {(scan.status === "completed" || scan.status === "failed") && scan.trigger === "manual" && <RescanButton repoUrl={scan.repo_url} siteUrl={scan.site_url} />}
+      {(scan.status === "completed" || scan.status === "failed" || scan.status === "canceled") && scan.trigger === "manual" && <RescanButton repoUrl={scan.repo_url} siteUrl={scan.site_url} />}
     </div>
   );
 
   if (scan.status === "queued" || scan.status === "running") {
-    return <div className="mx-auto max-w-6xl px-5 py-12">{header}<ScanProgress scanId={scan.id} initialSteps={scan.steps} repo={scan.repo_full_name} startedAt={(scan.started_at ?? scan.created_at).toISOString()} /></div>;
+    return <div className="mx-auto max-w-6xl px-5 py-12">{header}<ScanProgress scanId={scan.id} initialSteps={scan.steps} repo={scan.repo_full_name} startedAt={(scan.started_at ?? scan.created_at).toISOString()} canCancel={scan.trigger === "manual"} /></div>;
   }
 
-  if (scan.status === "failed") {
+  if (scan.status === "failed" || scan.status === "canceled") {
+    const failed = scan.status === "failed";
     return (
       <div className="mx-auto max-w-6xl px-5 py-12">
         {header}
         <div className="window mx-auto max-w-xl p-8 text-center">
-          <h2 className="text-lg font-semibold text-ink">We couldn’t finish this scan</h2>
-          <p className="mt-2 text-ink-3">{scan.error || "Something went wrong."}</p>
-          <p className="mt-6 text-[13px] text-ink-4">Failed scans don’t count toward your plan.</p>
+          <h2 className="text-lg font-semibold text-ink">{failed ? "We couldn’t finish this scan" : "You canceled this scan"}</h2>
+          {failed && <p className="mt-2 text-ink-3">{scan.error || "Something went wrong."}</p>}
+          <p className="mt-6 text-[13px] text-ink-4">{failed ? "Failed" : "Canceled"} scans don’t count toward your plan.</p>
         </div>
       </div>
     );

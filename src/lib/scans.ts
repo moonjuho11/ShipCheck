@@ -55,6 +55,7 @@ export async function startManualScan(s: NewScan): Promise<{ scan: Pick<ScanRow,
 
 /** Stop a scan the user started. A running worker notices on its next heartbeat. */
 export async function cancelScan(scanId: string, userId: string): Promise<boolean> {
+  if (!/^[0-9a-f-]{36}$/i.test(scanId)) return false;
   return sql().begin(async (tx) => {
     const [row] = await tx`
       update scans set status = 'canceled', error = null, finished_at = now()

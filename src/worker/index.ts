@@ -140,7 +140,7 @@ async function processJob(job: Job, workerId: string) {
       const reason = control.signal.reason;
       log(`scan ${scan.id} stopped: ${reason}`);
       if (reason === "shutdown") await requeueJob(owner, { delaySeconds: 0, refundAttempt: true });
-      if (reason === "canceled") { await finishJob(owner, false, "canceled"); await closeCheckRun(scan, "This scan was cancelled."); }
+      if (reason === "canceled") { await finishJob(owner, false, "canceled"); await closeCheckRun(scan, "This scan was canceled."); }
       return;
     }
     const rejected = e instanceof ScanRejected;

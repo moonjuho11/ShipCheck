@@ -44,7 +44,7 @@ export async function canStartScan(userId: string, repoFullName: string, ent?: E
   const e = ent ?? (await getEntitlements(userId));
   const [{ active }] = await db<{ active: number }[]>`
     select count(*)::int as active from scans where user_id = ${userId} and status in ('queued','running')`;
-  if (active >= MAX_ACTIVE_SCANS) return { ok: false, message: "You already have scans running. Please wait for them to finish." };
+  if (active >= MAX_ACTIVE_SCANS) return { ok: false, message: "You already have scans running. Wait for them to finish, or cancel one from your dashboard." };
   if (e.pro) return { ok: true, via: "pro" };
 
   const unlockedAt = e.unlocked.get(repoFullName);
