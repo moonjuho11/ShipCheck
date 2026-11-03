@@ -33,6 +33,8 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+# Fake keys only: the planted problem the scanner tests look for.
+!samples/insecure-app/.env
 
 # vercel
 .vercel

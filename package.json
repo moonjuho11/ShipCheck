@@ -12,7 +12,7 @@
     "sample:make": "tsx scripts/make-sample-repo.ts",
     "scan:local": "tsx --env-file-if-exists=.env.local scripts/scan-local.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "db:migrate:prod": "node scripts/migrate.mjs"
   },
   "dependencies": {
