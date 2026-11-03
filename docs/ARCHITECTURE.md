@@ -62,7 +62,10 @@ seaproof/
 │   │   ├── llm.ts                  ← Claude review of the riskiest files
 │   │   ├── score.ts                ← 0–100 score + "Production Ready" gate
 │   │   └── net.ts                  ← SSRF-guarded fetch for live-site checks
-│   └── worker/index.ts             ← queue consumer
+│   └── worker/
+│       ├── index.ts                ← queue consumer: heartbeats, retries, shutdown
+│       ├── scan-runner.ts          ← starts a scan process and always cleans up after it
+│       └── scan-child.ts           ← one scan, in its own process, without the worker's secrets
 └── tests/                          ← vitest: one test per check against the sample repo
 ```
 
@@ -98,9 +101,9 @@ keep a file path, a line number and, for secrets, a masked hint such as
 Locked fields are removed **on the server** before rendering. They are never
 just blurred in the browser.
 
-**Public share links** show the score, the badge state and finding titles.
-They never show file paths or fix instructions, so a shared report is not a
-roadmap for attackers.
+**Public share links** show the score, the badge state and per-area counts.
+They never show finding titles, file paths or fix instructions, so a shared
+report is not a roadmap for attackers.
 
 ## Safety rules for the scanner
 

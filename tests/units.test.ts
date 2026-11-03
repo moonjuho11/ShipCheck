@@ -2,6 +2,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { describe, expect, it } from "vitest";
 import { analyzeFirebaseRules, analyzeSupabaseSql } from "../src/scanner/checks/database";
 import { cmpVersion } from "../src/scanner/checks/dependencies";
+import { checkSecrets } from "../src/scanner/checks/secrets";
 import { detectProject } from "../src/scanner/files";
 import { aiReview } from "../src/scanner/llm";
 import { enrich } from "../src/scanner/rules";
@@ -68,6 +69,28 @@ describe("secret detection", () => {
     expect(findSecrets(`const firebaseConfig = { apiKey: "${key}aaaa", authDomain: "x.firebaseapp.com" }`)).toEqual([]);
     expect(findSecrets("DATABASE_URL=postgres://postgres:postgres@localhost:5432/app")).toEqual([]);
     expect(findSecrets("postgres://user:<password>@db.example.com/app")).toEqual([]);
+  });
+});
+
+describe("secrets given a public prefix", () => {
+  const flagged = async (path: string, content: string) => {
+    const file = { path, content };
+    const ctx: ScanContext = { root: "/tmp/x", files: [file], byPath: new Map([[path, file]]), project: detectProject([]), hasGitHistory: false };
+    const { findings } = await checkSecrets(ctx, { useGitleaks: false });
+    return findings.filter((f) => f.ruleId === "secrets.public-env-secret").map((f) => f.vars?.name);
+  };
+
+  it("flags real environment variables", async () => {
+    expect(await flagged("a.ts", "const k = process.env.NEXT_PUBLIC_STRIPE_SECRET;")).toEqual(["NEXT_PUBLIC_STRIPE_SECRET"]);
+    expect(await flagged("a.ts", "const k = process.env.PUBLIC_STRIPE_SECRET;")).toEqual(["PUBLIC_STRIPE_SECRET"]);
+    expect(await flagged("a.ts", "const k = import.meta.env.PUBLIC_API_PASSWORD;")).toEqual(["PUBLIC_API_PASSWORD"]);
+    expect(await flagged(".env", "PUBLIC_STRIPE_SECRET=abc")).toEqual(["PUBLIC_STRIPE_SECRET"]);
+    expect(await flagged("a.svelte", 'import { PUBLIC_API_SECRET } from "$env/static/public";')).toEqual(["PUBLIC_API_SECRET"]);
+  });
+
+  it("doesn't mistake an ordinary constant for one", async () => {
+    expect(await flagged("a.ts", "const PUBLIC_SECRET_RE = /x/;")).toEqual([]);
+    expect(await flagged("a.ts", "export const PUBLIC_PASSWORD_HINT = 'Use 12 characters';")).toEqual([]);
   });
 });
 

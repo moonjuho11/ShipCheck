@@ -1,4 +1,4 @@
-import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -6,7 +6,7 @@ import { makeSampleRepo } from "../scripts/make-sample-repo";
 import { ScanRejected } from "../src/scanner/errors";
 import { parseGitHubRepo } from "../src/scanner/sandbox";
 import type { Step } from "../src/scanner/types";
-import { runScanInChild, ScanStopped } from "../src/worker/scan-runner";
+import { runScanInChild, ScanStopped, sweepOldJobDirs } from "../src/worker/scan-runner";
 
 const realPath = process.env.PATH;
 const dirs: string[] = [];
@@ -101,6 +101,17 @@ describe("running a scan in its own process", { timeout: 120_000 }, () => {
     expect(e).toBeInstanceOf(Error);
     const rejected = await runScanInChild({ source: { kind: "github", repo: parseGitHubRepo("seaproof-test/none")!, ref: "-x" } }, { timeoutMs: 60_000 }).catch((x) => x);
     expect(rejected).toBeInstanceOf(ScanRejected);
+  });
+
+  it("sweeps away what a killed worker left behind, but not what's still in use", async () => {
+    const old = mkdtempSync(path.join(os.tmpdir(), "seaproof-job-"));
+    const recent = mkdtempSync(path.join(os.tmpdir(), "seaproof-job-"));
+    dirs.push(old, recent);
+    const twoHoursAgo = new Date(Date.now() - 2 * 3_600_000);
+    utimesSync(old, twoHoursAgo, twoHoursAgo);
+    await sweepOldJobDirs();
+    expect(existsSync(old)).toBe(false);
+    expect(existsSync(recent)).toBe(true);
   });
 
   it("always removes its temporary files", async () => {

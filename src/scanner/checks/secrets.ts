@@ -151,6 +151,9 @@ export async function checkSecrets(ctx: ScanContext, opts: SecretsCheckOptions):
     while ((m = PUBLIC_SECRET_RE.exec(f.content))) {
       const name = m[0];
       if (/PUBLISHABLE|PUBLIC_KEY$|_ANON_|SITE_KEY|CLIENT_ID$/.test(name)) continue;
+      // A bare PUBLIC_ prefix only means "sent to the browser" on an env variable. Elsewhere it's just a name.
+      const isEnvVar = ENV_FILE.test(f.path) || f.content.slice(Math.max(0, m.index - 4), m.index) === "env." || f.content.includes("$env/");
+      if (name.startsWith("PUBLIC_") && !isEnvVar) continue;
       if (!publicNames.has(name)) publicNames.set(name, { file: f.path, line: lineOf(f.content, m.index) });
     }
   }

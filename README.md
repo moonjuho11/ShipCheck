@@ -160,7 +160,11 @@ Pushing to `main` redeploys both app services. Add the GitHub OAuth, GitHub App,
 docker build -f Dockerfile.worker -t seaproof-worker .
 ```
 
-  Give it a few GB of disk for temp clones, and set `WORKER_CONCURRENCY` (default 2). Stale jobs are re-queued after 30 minutes, and a scan is retried at most twice.
+  Give it a few GB of disk for temp clones, and set `WORKER_CONCURRENCY` (default 2).
+
+  Each scan runs in its own process, with none of the worker's secrets, a 15-minute limit (`WORKER_SCAN_TIMEOUT_MS`) and a 1 GB memory limit (`WORKER_SCAN_MEMORY_MB`). Workers send a heartbeat every 10 seconds, so a dead worker's scan goes back in line within about two minutes (`WORKER_STALE_SECONDS`). A scan that hits a temporary problem is retried at most twice, and problems the user has to fix aren't retried. On SIGTERM a worker gives running scans 4 minutes to finish (`WORKER_DRAIN_MS`), then hands them back without using up a retry.
+
+  Point an uptime monitor at `/api/health`. It returns 503 if the database is down, and reports `workersOnline` and `oldestQueuedSeconds` so you can alert when scans aren't moving.
 
 ---
 
